@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alexandre | Painel de Links</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Meus Links">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #07070f;
+      --surface: #0f0f1a;
+      --surface2: #161625;
+      --border: rgba(255,255,255,0.06);
+      --accent: #c8a96e;
+      --accent2: #7b9cff;
+      --accent3: #ff6b6b;
+      --text: #e8e8f0;
+      --muted: #666680;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(200,169,110,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(123,156,255,0.06) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .avatar-ring {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--bg);
+    }
+
+    header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      color: var(--text);
+    }
+
+    header p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      margin: 16px auto 0;
+      border-radius: 2px;
+    }
+
+    .search-wrap {
+      margin-bottom: 36px;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-wrap input::placeholder { color: var(--muted); }
+    .search-wrap input:focus { border-color: rgba(200,169,110,0.4); }
+
+    .category {
+      margin-bottom: 32px;
+    }
+
+    .cat-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      padding-left: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cat-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+    }
+
+    .grid.wide {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 14px;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .link-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.03), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .link-card:hover {
+      border-color: rgba(200,169,110,0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .link-card:hover::before { opacity: 1; }
+    .link-card:active { transform: translateY(0); }
+
+    .icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .link-name {
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .link-sub {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .link-card.hidden { display: none; }
+
+    .clock {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .clock-time {
+      font-family: 'Syne', sans-serif;
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .clock-date {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="avatar-ring">A</div>
+    <h1>Alexandre Damasceno</h1>
+    <p>Consultor Imobiliário · CRECI 106.899</p>
+    <div class="divider"></div>
+  </header>
+
+  <div class="clock">
+    <div class="clock-time" id="clock">--:--</div>
+    <div class="clock-date" id="date">--</div>
+  </div>
+
+  <div class="search-wrap">
+    <input type="text" id="search" placeholder="🔍  Buscar link..." oninput="filterLinks(this.value)">
+  </div>
+
+  <!-- TRABALHO -->
+  <div class="category">
+    <div class="cat-label">💼 Trabalho Imobiliário</div>
+    <div class="grid wide">
+      <a class="link-card" href="https://aeaimoveis.inforcedata.com.br" target="_blank" data-name="Inforce CRM">
+        <div class="icon" style="background:#1a2a1a">🏢</div>
+        <div><div class="link-name">Inforce CRM</div><div class="link-sub">aeaimoveis</div></div>
+      </a>
+      <a class="link-card" href="https://www.orulo.com.br" target="_blank" data-name="Órulo Portal">
+        <div class="icon" style="background:#1a1a2a">🏗️</div>
+        <div><div class="link-name">Órulo</div><div class="link-sub">Portal de imóveis</div></div>
+      </a>
+      <a class="link-card" href="https://app.asana.com" target="_blank" data-name="Asana tarefas">
+        <div class="icon" style="background:#2a1a1a">📋</div>
+        <div><div class="link-name">Asana</div><div class="link-sub">Tarefas & CRM</div></div>
+      </a>
+      <a class="link-card" href="https://www.lopesnet.com.br" target="_blank" data-name="Lopes Rio">
+        <div class="icon" style="background:#1a2020">🔑</div>
+        <div><div class="link-name">Lopes Rio</div><div class="link-sub">Portal interno</div></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- INCORPORADORAS -->
+  <div class="category">
+    <div class="cat-label">🏙️ Incorporadoras & Lançamentos</div>
+    <div class="grid wide">
+      <a class="link-card" href="https://www.calper.com.br" target="_blank" data-name="Calper incorporadora">
+        <div class="icon" style="background:#1a1a10">🏛️</div>
+        <div><div class="link-name">Calper</div><div class="link-sub">Incorporadora</div></div>
+      </a>
+      <a class="link-card" href="https://www.btgpactual.com" target="_blank" data-name="BTG Pactual">
+        <div class="icon" style="background:#0f1520">🏦</div>
+        <div><div class="link-name">BTG Pactual</div><div class="link-sub">Incorporadora</div></div>
+      </a>
+      <a class="link-card" href="https://www.opportunity.com.br" target="_blank" data-name="Opportunity incorporadora">
+        <div class="icon" style="background:#15100f">🏢</div>
+        <div><div class="link-name">Opportunity</div><div class="link-sub">Incorporadora</div></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- REDES SOCIAIS -->
+  <div class="category">
+    <div class="cat-label">📱 Redes Sociais</div>
+    <div class="grid">
+      <a class="link-card" href="https://www.instagram.com/alexandredamasceno.corretor" target="_blank" data-name="Instagram trabalho corretor">
+        <div class="icon" style="background:#2a1520">📸</div>
+        <div><div class="link-name">Instagram</div><div class="link-sub">@corretor</div></div>
+      </a>
+      <a class="link-card" href="https://www.instagram.com/alexandre.d.nascimento" target="_blank" data-name="Instagram pessoal">
+        <div class="icon" style="background:#1e1520">🤳</div>
+        <div><div class="link-name">Instagram</div><div class="link-sub">@pessoal</div></div>
+      </a>
+      <a class="link-card" href="https://www.facebook.com/alexandre.damasceno.nascimento" target="_blank" data-name="Facebook pessoal Alexandre Damasceno">
+        <div class="icon" style="background:#0f1525">👤</div>
+        <div><div class="link-name">Facebook</div><div class="link-sub">Pessoal</div></div>
+      </a>
+      <a class="link-card" href="https://www.facebook.com" target="_blank" data-name="Facebook trabalho página">
+        <div class="icon" style="background:#0f1030">📘</div>
+        <div><div class="link-name">Facebook</div><div class="link-sub">Trabalho</div></div>
+      </a>
+      <a class="link-card" href="https://www.tiktok.com/@alexandrecorretor106899" target="_blank" data-name="TikTok corretor">
+        <div class="icon" style="background:#0f1a1a">🎵</div>
+        <div><div class="link-name">TikTok</div><div class="link-sub">@corretor106899</div></div>
+      </a>
+      <a class="link-card" href="https://web.whatsapp.com" target="_blank" data-name="WhatsApp Web">
+        <div class="icon" style="background:#0f2015">💬</div>
+        <div><div class="link-name">WhatsApp</div><div class="link-sub">Web</div></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- IA -->
+  <div class="category">
+    <div class="cat-label">🤖 Inteligência Artificial</div>
+    <div class="grid">
+      <a class="link-card" href="https://claude.ai" target="_blank" data-name="Claude IA Anthropic">
+        <div class="icon" style="background:#1a1510">🧠</div>
+        <div><div class="link-name">Claude</div><div class="link-sub">Anthropic</div></div>
+      </a>
+      <a class="link-card" href="https://chatgpt.com" target="_blank" data-name="ChatGPT OpenAI">
+        <div class="icon" style="background:#0f1a12">💡</div>
+        <div><div class="link-name">ChatGPT</div><div class="link-sub">OpenAI</div></div>
+      </a>
+      <a class="link-card" href="https://gemini.google.com" target="_blank" data-name="Gemini Google IA">
+        <div class="icon" style="background:#101520">✨</div>
+        <div><div class="link-name">Gemini</div><div class="link-sub">Google</div></div>
+      </a>
+      <a class="link-card" href="https://chat.deepseek.com" target="_blank" data-name="DeepSeek IA">
+        <div class="icon" style="background:#0f1520">🔬</div>
+        <div><div class="link-name">DeepSeek</div><div class="link-sub">IA</div></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- CRIAÇÃO & DESIGN -->
+  <div class="category">
+    <div class="cat-label">🎨 Criação & Design</div>
+    <div class="grid">
+      <a class="link-card" href="https://www.canva.com" target="_blank" data-name="Canva design gráfico">
+        <div class="icon" style="background:#1a1020">🎨</div>
+        <div><div class="link-name">Canva</div><div class="link-sub">Design</div></div>
+      </a>
+      <a class="link-card" href="https://www.capcut.com" target="_blank" data-name="CapCut video editor vídeo">
+        <div class="icon" style="background:#0f0f1a">🎬</div>
+        <div><div class="link-name">CapCut</div><div class="link-sub">Editor de vídeo</div></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- DEV & CLOUD -->
+  <div class="category">
+    <div class="cat-label">⚙️ Dev & Cloud</div>
+    <div class="grid">
+      <a class="link-card" href="https://vercel.com" target="_blank" data-name="Vercel deploy hospedagem">
+        <div class="icon" style="background:#151515">▲</div>
+        <div><div class="link-name">Vercel</div><div class="link-sub">Hospedagem</div></div>
+      </a>
+      <a class="link-card" href="https://github.com" target="_blank" data-name="GitHub código repositório">
+        <div class="icon" style="background:#0f1018">🐙</div>
+        <div><div class="link-name">GitHub</div><div class="link-sub">Repositório</div></div>
+      </a>
+      <a class="link-card" href="https://mega.nz" target="_blank" data-name="Mega Drive armazenamento nuvem">
+        <div class="icon" style="background:#1a0f10">☁️</div>
+        <div><div class="link-name">MEGA</div><div class="link-sub">Armazenamento</div></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- GOOGLE -->
+  <div class="category">
+    <div class="cat-label">📁 Google</div>
+    <div class="grid">
+      <a class="link-card" href="https://mail.google.com" target="_blank" data-name="Gmail email correio">
+        <div class="icon" style="background:#1a1010">📧</div>
+        <div><div class="link-name">Gmail</div><div class="link-sub">E-mail</div></div>
+      </a>
+      <a class="link-card" href="https://drive.google.com/drive/u/0/my-drive" target="_blank" data-name="Google Drive arquivos documentos">
+        <div class="icon" style="background:#101a10">📂</div>
+        <div><div class="link-name">Google Drive</div><div class="link-sub">Meus arquivos</div></div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('clock').textContent = h + ':' + m;
+    const days = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+    const months = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    document.getElementById('date').textContent =
+      days[now.getDay()] + ', ' + now.getDate() + ' de ' + months[now.getMonth()];
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  function filterLinks(q) {
+    const term = q.toLowerCase().trim();
+    document.querySelectorAll('.link-card').forEach(card => {
+      const name = (card.dataset.name || '').toLowerCase();
+      card.classList.toggle('hidden', term !== '' && !name.includes(term));
+    });
+  }
+
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+</script>
+</body>
+</html>

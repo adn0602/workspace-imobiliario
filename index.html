@@ -4,48 +4,141 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Workspace | Alexandre Damasceno</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#020617">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
         :root {
             --bg-dark: #050505;
             --glass-bg: rgba(20, 25, 40, 0.4);
             --glass-border: rgba(255, 255, 255, 0.3);
             --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 45%, #b38728 100%);
+            --blue-gradient: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #1d4ed8 100%);
             --text-main: #f8fafc;
             --gold-text: #e8c97a;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Segoe UI', sans-serif; overflow-x: hidden; min-height: 100vh; }
 
-        .background-anim { position: fixed; inset: 0; z-index: -1; pointer-events: none; background-image: radial-gradient(circle at 15% 50%, rgba(201, 168, 76, 0.08), transparent 25%), radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 25%); }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Lato', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
 
-        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 1000; }
-        .clock { font-size: 1.4rem; font-weight: 700; color: var(--gold-text); }
+        /* Fundo Animado */
+        .background-anim {
+            position: fixed; inset: 0; z-index: -1; pointer-events: none;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(201, 168, 76, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 25%);
+        }
+        .background-anim::before {
+            content: ''; position: absolute; inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridMove 20s linear infinite;
+        }
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); }
+        }
 
-        .main-content { max-width: 1200px; margin: 0 auto; padding: 20px; padding-bottom: 120px; }
-        .slide { display: none; opacity: 0; }
-        .slide.active { display: block; opacity: 1; }
+        /* Top Bar */
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 30px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); position: sticky; top: 0; z-index: 1000;
+        }
+        .clock-widget { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--gold-text); }
+        .post-counter { font-size: 1rem; color: #94a3b8; display: flex; align-items: center; gap: 8px; }
+        .post-counter span { background: var(--gold-gradient); color: #000; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
-        .card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 15px; padding: 20px; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center; color: var(--text-main); transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); border-color: #fff; }
-        .card i { font-size: 2rem; margin-bottom: 10px; }
+        /* Busca */
+        .search-container { padding: 20px 30px 0; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
+        .search-bar {
+            width: 100%; background: var(--glass-bg); border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px; padding: 15px 25px; color: white; font-size: 1.2rem;
+            backdrop-filter: blur(10px); outline: none; transition: border-color 0.3s;
+        }
+        .search-bar:focus { border-color: var(--gold-text); }
 
-        .creator-box { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 800px) { .creator-box { grid-template-columns: 1fr; } }
-        .panel { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 15px; padding: 20px; }
-        input, textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; padding: 12px; margin-top: 10px; font-size: 1rem; }
-        .btn-primary { width: 100%; background: var(--gold-gradient); color: #000; border: none; padding: 15px; border-radius: 10px; font-weight: 800; cursor: pointer; margin-top: 15px; text-transform: uppercase; }
+        /* Slides */
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 30px; padding-bottom: 120px; position: relative; z-index: 10; }
+        .slide { display: none; opacity: 0; transform: translateY(20px); }
+        .slide.active { display: block; opacity: 1; transform: translateY(0); animation: fadeIn 0.4s forwards; }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
 
-        #preview-canvas { width: 100%; border-radius: 10px; border: 1px solid var(--glass-border); margin-top: 10px; background: #000; }
+        .section-header { margin-bottom: 25px; font-family: 'Poppins'; }
+        .section-header h2 { font-size: 2rem; }
+        .section-header p { color: #94a3b8; font-size: 1.1rem; }
 
-        .dock { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 25, 0.9); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 10px 20px; border-radius: 35px; display: flex; gap: 15px; z-index: 2000; }
-        .dock-btn { background: transparent; border: none; color: #94a3b8; cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 5px 10px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
-        .dock-btn.active { color: #c9a84c; }
-        .dock-btn i { font-size: 1.4rem; margin-bottom: 3px; }
+        /* Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center; color: var(--text-main); transition: 0.3s; position: relative; }
+        .card:hover { transform: translateY(-8px); border-color: var(--gold-text); background: rgba(255,255,255,0.05); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        
+        .card-icon { width: 55px; height: 55px; margin-bottom: 15px; border-radius: 12px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        .card-icon img { width: 35px; height: 35px; border-radius: 8px; }
+        
+        .card .title { font-size: 1.2rem; font-weight: 700; font-family: 'Poppins'; }
+        .card .sub { font-size: 0.85rem; color: #94a3b8; margin-top: 5px; }
 
-        #toast { position: fixed; top: 80px; right: 30px; background: #10b981; color: white; padding: 15px 25px; border-radius: 12px; transform: translateX(150%); transition: 0.4s; z-index: 3000; }
+        .notify-badge { position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; font-size: 0.75rem; font-weight: bold; padding: 4px 10px; border-radius: 20px; box-shadow: 0 4px 10px rgba(239,68,68,0.4); }
+        .badge-gold { background: var(--gold-gradient); color: #000; box-shadow: 0 4px 10px rgba(201,168,76,0.4); }
+
+        /* Post Creator (Canvas e Inputs) */
+        .creator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media (max-width: 800px) { .creator-grid { grid-template-columns: 1fr; } }
+        .panel { background: var(--glass-bg); border-radius: 20px; padding: 25px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(15px); }
+        .field { margin-bottom: 20px; }
+        .field label { display: block; color: var(--gold-text); font-weight: bold; margin-bottom: 8px; }
+        textarea, input, select { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: white; padding: 15px; font-size: 1.1rem; font-family: 'Lato', sans-serif; }
+        textarea:focus, input:focus, select:focus { border-color: var(--gold-text); outline: none; }
+        
+        .toolbar { display: flex; gap: 8px; margin-bottom: 10px; }
+        .tool-btn { background: rgba(255,255,255,0.1); border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; color: white; font-size: 1.2rem; }
+        
+        .btn-primary { width: 100%; background: var(--gold-gradient); color: #000; border: none; padding: 20px; border-radius: 15px; font-size: 1.2rem; font-weight: 800; cursor: pointer; margin-top: 15px; text-transform: uppercase; transition: 0.3s; }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* Estilo do Canvas de Preview */
+        #preview-canvas { width: 100%; max-width: 500px; height: auto; border-radius: 15px; border: 1px solid var(--glass-border); margin-top: 15px; display: block; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+
+        /* Dock Nativa */
+        .dock { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 25, 0.95); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 40px; display: flex; gap: 5px; z-index: 9999; box-shadow: 0 15px 40px rgba(0,0,0,0.8); width: 90%; max-width: 600px; justify-content: space-around; }
+        .dock-item { background: transparent; border: none; outline: none; font-family: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 5px; flex: 1; color: #94a3b8; cursor: pointer; transition: 0.3s; position: relative; -webkit-tap-highlight-color: transparent; }
+        .dock-item * { pointer-events: none; }
+        .dock-item.active { color: #c9a84c; }
+        .dock-item i { font-size: 1.6rem; transition: transform 0.3s; margin-bottom: 5px; }
+        .dock-item span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0; transform: translateY(10px); position: absolute; bottom: 2px; transition: 0.3s; white-space: nowrap; }
+        .dock-item:hover i, .dock-item.active i { transform: translateY(-10px); color: white; }
+        .dock-item.active i { color: #c9a84c; }
+        .dock-item:hover span, .dock-item.active span { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 600px) {
+             .dock { padding: 5px; width: 95%; bottom: 15px; }
+             .dock-item { padding: 15px 2px 20px; }
+             .dock-item i { font-size: 1.4rem; }
+             .dock-item span { font-size: 0.65rem; bottom: 5px; }
+             .dock-item.active span { opacity: 1; transform: translateY(0); }
+             .dock-item.active i { transform: translateY(-10px); }
+        }
+
+        /* Calculadora Embutida */
+        .calc-wrapper { display: none; margin-top: 15px; width: 100%; }
+        .calc-wrapper.show { display: block; }
+
+        /* Toast */
+        #toast { position: fixed; top: 80px; right: 30px; background: #10b981; color: white; padding: 15px 25px; border-radius: 12px; font-weight: bold; font-size: 1.1rem; transform: translateX(150%); transition: 0.4s; z-index: 3000; display: flex; align-items: center; gap: 10px; }
         #toast.show { transform: translateX(0); }
     </style>
 </head>
@@ -53,136 +146,35 @@
 
     <div class="background-anim"></div>
 
-    <header>
-        <div style="font-weight: 700;">ALEXANDRE DAMASCENO</div>
-        <div class="clock" id="clock">00:00:00</div>
+    <header class="top-bar">
+        <div class="post-counter" title="Artes salvas na Nuvem">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Arquivadas: <span id="post-count">0</span>
+        </div>
+        <div class="clock-widget" id="clock">00:00:00</div>
     </header>
 
+    <div class="search-container">
+        <input type="text" id="search-input" class="search-bar" placeholder="🔍 Buscar links (Ex: Pura, Insta, ChatGPT)...">
+    </div>
+
     <main class="main-content">
+        
         <section id="slide-sociais" class="slide active">
+            <div class="section-header"><h2>Redes Sociais</h2><p>Comunicação e Presença Digital</p></div>
             <div class="grid">
-                <a href="https://wa.me/5521972653971" target="_blank" class="card"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i><span class="title">WhatsApp</span></a>
-                <a href="https://www.instagram.com/alexandredamasceno.corretor" target="_blank" class="card"><i class="fa-brands fa-instagram" style="color: #E1306C;"></i><span class="title">Insta Prof.</span></a>
-                <a href="https://www.facebook.com/alexandre.damasceno.nascimento" target="_blank" class="card"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i><span class="title">Facebook</span></a>
-            </div>
-        </section>
-
-        <section id="slide-creator" class="slide">
-            <div class="creator-box">
-                <div class="panel">
-                    <label>1. Foto do Imóvel</label>
-                    <input type="file" id="image-input" accept="image/*">
-                    <input type="text" id="p-title" placeholder="TÍTULO DO IMÓVEL">
-                    <input type="text" id="p-price" placeholder="VALOR / DESTAQUE">
-                    <textarea id="p-desc" rows="4" placeholder="DESCRIÇÃO DETALHADA"></textarea>
-                    <button class="btn-primary" id="btn-save">Guardar e Baixar Arte</button>
-                </div>
-                <div class="panel">
-                    <canvas id="preview-canvas" width="1080" height="1350"></canvas>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <nav class="dock">
-        <button class="dock-btn active" onclick="switchSlide('slide-sociais', this)"><i class="fa-solid fa-users"></i><span>Sociais</span></button>
-        <button class="dock-btn" onclick="switchSlide('slide-creator', this)"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Estúdio</span></button>
-    </nav>
-
-    <div id="toast">Arte Guardada na Nuvem!</div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
-
-        // CHAVES INTEGRADAS DA SUA FOTOGRAFIA
-        const firebaseConfig = {
-            apiKey: "AIzaSyBlN0-t5xR6V9v_u-mE3y_C5f1l5G8w_c",
-            authDomain: "workspace-alexandre-damasceno.firebaseapp.com",
-            projectId: "workspace-alexandre-damasceno",
-            storageBucket: "workspace-alexandre-damasceno.appspot.com",
-            messagingSenderId: "596144869389",
-            appId: "1:596144869389:web:9c976d8b67f3c7764d7c76"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const storage = getStorage(app);
-
-        // LÓGICA DO RELÓGIO E NAVEGAÇÃO
-        setInterval(() => { document.getElementById('clock').textContent = new Date().toLocaleTimeString('pt-PT'); }, 1000);
-
-        window.switchSlide = (id, btn) => {
-            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.dock-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            btn.classList.add('active');
-        };
-
-        // LÓGICA DO ESTÚDIO (CANVAS)
-        const canvas = document.getElementById('preview-canvas');
-        const ctx = canvas.getContext('2d');
-        let img = new Image();
-
-        document.getElementById('image-input').onchange = (e) => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                img.onload = draw;
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        };
-
-        document.querySelectorAll('input, textarea').forEach(el => el.oninput = draw);
-
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (img.src) ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = "rgba(0,0,0,0.6)";
-            ctx.fillRect(0, canvas.height - 400, canvas.width, 400);
-
-            ctx.fillStyle = "#e8c97a";
-            ctx.font = "bold 50px Segoe UI";
-            ctx.fillText(document.getElementById('p-title').value.toUpperCase(), 50, canvas.height - 250);
-            
-            ctx.fillStyle = "white";
-            ctx.font = "40px Segoe UI";
-            ctx.fillText(document.getElementById('p-price').value, 50, canvas.height - 180);
-
-            ctx.font = "30px Segoe UI";
-            ctx.fillText("ALEXANDRE DAMASCENO | CRECI 106.899", 50, canvas.height - 60);
-        }
-
-        document.getElementById('btn-save').onclick = async () => {
-            const btn = document.getElementById('btn-save');
-            btn.disabled = true;
-            btn.innerText = "A GUARDAR...";
-
-            canvas.toBlob(async (blob) => {
-                const fileRef = ref(storage, `artes/${Date.now()}.png`);
-                await uploadBytes(fileRef, blob);
-                const url = await getDownloadURL(fileRef);
-
-                await addDoc(collection(db, "historico_artes"), {
-                    titulo: document.getElementById('p-title').value,
-                    imagemUrl: url,
-                    data: serverTimestamp()
-                });
-
-                const link = document.createElement('a');
-                link.download = "arte-imovel.png";
-                link.href = canvas.toDataURL();
-                link.click();
-
-                document.getElementById('toast').classList.add('show');
-                setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000);
-                
-                btn.disabled = false;
-                btn.innerText = "Guardar e Baixar Arte";
-            });
-        };
-    </script>
-</body>
-</html>
+                <a href="https://wa.me/5521972653971" target="_blank" class="card link-item" data-search="whatsapp zap">
+                    <div class="notify-badge badge-gold">Prioridade</div>
+                    <div class="card-icon"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i></div>
+                    <span class="title">WhatsApp</span><span class="sub">Profissional</span>
+                </a>
+                <a href="https://www.instagram.com/alexandredamasceno.corretor" target="_blank" class="card link-item" data-search="instagram corretor profissional">
+                    <div class="card-icon"><i class="fa-brands fa-instagram" style="color: #E1306C;"></i></div>
+                    <span class="title">Instagram</span><span class="sub">Profissional</span>
+                </a>
+                <a href="https://www.instagram.com/alexandre.d.nascimento" target="_blank" class="card link-item" data-search="instagram pessoal">
+                    <div class="card-icon"><i class="fa-brands fa-instagram" style="color: #833AB4;"></i></div>
+                    <span class="title">Instagram</span><span class="sub">Pessoal</span>
+                </a>
+                <a href="https://www.facebook.com/alexandre.damasceno.nascimento" target="_blank" class="card link-item" data-search="facebook profissional">
+                    <div class="card-icon"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i></div>
+                    <span class="title">Facebook</span><span class="sub">Profissional</span>

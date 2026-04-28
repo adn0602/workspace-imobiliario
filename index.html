@@ -17,7 +17,6 @@
             --glass-bg: rgba(20, 25, 40, 0.4);
             --glass-border: rgba(255, 255, 255, 0.3);
             --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 45%, #b38728 100%);
-            --blue-gradient: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #1d4ed8 100%);
             --text-main: #f8fafc;
             --gold-text: #e8c97a;
         }
@@ -49,51 +48,29 @@
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
         .card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center; color: var(--text-main); transition: 0.3s; position: relative; }
-        .card:hover { transform: translateY(-8px); border-color: var(--gold-text); background: rgba(255,255,255,0.05); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .card:hover { transform: translateY(-8px); border-color: var(--gold-text); }
         .card-icon { width: 55px; height: 55px; margin-bottom: 15px; border-radius: 12px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
         .card-icon img { width: 35px; height: 35px; border-radius: 8px; }
         .card .title { font-size: 1.2rem; font-weight: 700; font-family: 'Poppins'; }
         .card .sub { font-size: 0.85rem; color: #94a3b8; margin-top: 5px; }
 
-        .notify-badge { position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; font-size: 0.75rem; font-weight: bold; padding: 4px 10px; border-radius: 20px; box-shadow: 0 4px 10px rgba(239,68,68,0.4); }
-        .badge-gold { background: var(--gold-gradient); color: #000; box-shadow: 0 4px 10px rgba(201,168,76,0.4); }
-
         .creator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         @media (max-width: 800px) { .creator-grid { grid-template-columns: 1fr; } }
         .panel { background: var(--glass-bg); border-radius: 20px; padding: 25px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(15px); }
-        .field { margin-bottom: 20px; }
-        .field label { display: block; color: var(--gold-text); font-weight: bold; margin-bottom: 8px; }
-        textarea, input, select { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: white; padding: 15px; font-size: 1.1rem; font-family: 'Lato', sans-serif; }
-        textarea:focus, input:focus, select:focus { border-color: var(--gold-text); outline: none; }
+        textarea, input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: white; padding: 15px; font-size: 1.1rem; margin-top: 10px; }
         
-        .btn-primary { width: 100%; background: var(--gold-gradient); color: #000; border: none; padding: 20px; border-radius: 15px; font-size: 1.2rem; font-weight: 800; cursor: pointer; margin-top: 15px; text-transform: uppercase; transition: 0.3s; }
+        .btn-primary { width: 100%; background: var(--gold-gradient); color: #000; border: none; padding: 20px; border-radius: 15px; font-size: 1.2rem; font-weight: 800; cursor: pointer; margin-top: 15px; text-transform: uppercase; }
         .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        #preview-canvas { width: 100%; max-width: 500px; height: auto; border-radius: 15px; border: 1px solid var(--glass-border); margin-top: 15px; display: block; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #preview-canvas { width: 100%; max-width: 500px; height: auto; border-radius: 15px; border: 1px solid var(--glass-border); margin-top: 15px; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
-        .dock { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 25, 0.95); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 40px; display: flex; gap: 5px; z-index: 99999; box-shadow: 0 15px 40px rgba(0,0,0,0.8); width: 90%; max-width: 600px; justify-content: space-around; }
-        .dock-item { background: transparent; border: none; outline: none; font-family: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 5px; flex: 1; color: #94a3b8; cursor: pointer; transition: 0.3s; position: relative; -webkit-tap-highlight-color: transparent; }
-        .dock-item * { pointer-events: none; }
+        .dock { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 25, 0.95); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.3); padding: 5px; border-radius: 40px; display: flex; z-index: 99999; width: 90%; max-width: 600px; justify-content: space-around; }
+        .dock-item { background: transparent; border: none; color: #94a3b8; cursor: pointer; padding: 12px; display: flex; flex-direction: column; align-items: center; flex: 1; transition: 0.3s; }
         .dock-item.active { color: #c9a84c; }
-        .dock-item i { font-size: 1.6rem; transition: transform 0.3s; margin-bottom: 5px; }
-        .dock-item span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0; transform: translateY(10px); position: absolute; bottom: 2px; transition: 0.3s; white-space: nowrap; }
-        .dock-item:hover i, .dock-item.active i { transform: translateY(-10px); color: white; }
-        .dock-item.active i { color: #c9a84c; }
-        .dock-item:hover span, .dock-item.active span { opacity: 1; transform: translateY(0); }
+        .dock-item i { font-size: 1.6rem; margin-bottom: 4px; }
+        .dock-item span { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
 
-        @media (max-width: 600px) {
-             .dock { padding: 5px; width: 95%; bottom: 25px; } 
-             .dock-item { padding: 15px 2px 20px; }
-             .dock-item i { font-size: 1.4rem; }
-             .dock-item span { font-size: 0.65rem; bottom: 5px; }
-             .dock-item.active span { opacity: 1; transform: translateY(0); }
-             .dock-item.active i { transform: translateY(-10px); }
-        }
-
-        .calc-wrapper { display: none; margin-top: 15px; width: 100%; }
-        .calc-wrapper.show { display: block; }
-
-        #toast { position: fixed; top: 80px; right: 30px; background: #10b981; color: white; padding: 15px 25px; border-radius: 12px; font-weight: bold; font-size: 1.1rem; transform: translateX(150%); transition: 0.4s; z-index: 3000; display: flex; align-items: center; gap: 10px; }
+        #toast { position: fixed; top: 80px; right: 30px; background: #10b981; color: white; padding: 15px 25px; border-radius: 12px; font-weight: bold; transform: translateX(150%); transition: 0.4s; z-index: 3000; }
         #toast.show { transform: translateX(0); }
     </style>
 </head>
@@ -102,398 +79,139 @@
     <div class="background-anim"></div>
 
     <header class="top-bar">
-        <div class="post-counter" title="Artes criadas">
-            <i class="fa-solid fa-image"></i> Criadas: <span id="post-count">0</span>
-        </div>
+        <div class="post-counter"><i class="fa-solid fa-image"></i> Criadas: <span id="post-count">0</span></div>
         <div class="clock-widget" id="clock">00:00:00</div>
     </header>
 
     <div class="search-container">
-        <input type="text" id="search-input" class="search-bar" placeholder="🔍 Buscar links (Ex: Pura, Insta, ChatGPT)...">
+        <input type="text" id="search-input" class="search-bar" placeholder="🔍 Buscar links (Pura, Insta, ChatGPT)...">
     </div>
 
     <main class="main-content">
-        
         <section id="slide-sociais" class="slide active">
             <div class="section-header"><h2>Redes Sociais</h2><p>Comunicação e Presença Digital</p></div>
             <div class="grid">
                 <a href="https://wa.me/5521972653971" target="_blank" class="card link-item" data-search="whatsapp zap">
-                    <div class="notify-badge badge-gold">Prioridade</div>
                     <div class="card-icon"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i></div>
-                    <span class="title">WhatsApp</span><span class="sub">Profissional</span>
+                    <span class="title">WhatsApp</span>
                 </a>
-                <a href="https://www.instagram.com/alexandredamasceno.corretor" target="_blank" class="card link-item" data-search="instagram corretor profissional">
+                <a href="https://www.instagram.com/alexandredamasceno.corretor" target="_blank" class="card link-item" data-search="instagram">
                     <div class="card-icon"><i class="fa-brands fa-instagram" style="color: #E1306C;"></i></div>
-                    <span class="title">Instagram</span><span class="sub">Profissional</span>
+                    <span class="title">Instagram Prof.</span>
                 </a>
-                <a href="https://www.instagram.com/alexandre.d.nascimento" target="_blank" class="card link-item" data-search="instagram pessoal">
-                    <div class="card-icon"><i class="fa-brands fa-instagram" style="color: #833AB4;"></i></div>
-                    <span class="title">Instagram</span><span class="sub">Pessoal</span>
-                </a>
-                <a href="https://www.facebook.com/alexandre.damasceno.nascimento" target="_blank" class="card link-item" data-search="facebook profissional">
-                    <div class="card-icon"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i></div>
-                    <span class="title">Facebook</span><span class="sub">Profissional</span>
-                </a>
-                <a href="https://www.facebook.com/alexandre.damasceno.nascimento" target="_blank" class="card link-item" data-search="facebook pessoal">
-                    <div class="card-icon"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i></div>
-                    <span class="title">Facebook</span><span class="sub">Pessoal</span>
-                </a>
-                <a href="https://www.tiktok.com/@alexandrecorretor106899" target="_blank" class="card link-item" data-search="tiktok">
-                    <div class="card-icon"><i class="fa-brands fa-tiktok" style="color: #fff;"></i></div>
-                    <span class="title">TikTok</span><span class="sub">@corretor106899</span>
-                </a>
-            </div>
-        </section>
-
-        <section id="slide-vendas" class="slide">
-            <div class="section-header"><h2>Vendas</h2><p>Incorporadoras e Parcerias</p></div>
-            <div class="grid">
-                <a href="https://linktr.ee/comercialcalper" target="_blank" class="card link-item" data-search="calper">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=linktr.ee&sz=64" alt="Calper"></div>
-                    <span class="title">Calper</span>
-                </a>
-                <a href="https://linktr.ee/opp.claudioaguimaraes" target="_blank" class="card link-item" data-search="opportunity">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=linktr.ee&sz=64" alt="Opportunity"></div>
-                    <span class="title">Opportunity</span>
-                </a>
-                <a href="#" target="_blank" class="card link-item" data-search="rg progress">
-                    <div class="card-icon"><i class="fa-solid fa-city" style="color: #c9a84c;"></i></div>
-                    <span class="title">RG Progress</span>
-                </a>
-                <a href="#" target="_blank" class="card link-item" data-search="tegra">
-                    <div class="card-icon"><i class="fa-solid fa-building" style="color: #3b82f6;"></i></div>
-                    <span class="title">Tegra</span>
-                </a>
-                <a href="https://linktr.ee/comercial_calcada" target="_blank" class="card link-item" data-search="calcada">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=linktr.ee&sz=64" alt="Calçada"></div>
-                    <span class="title">Calçada</span>
-                </a>
-                <a href="https://linktr.ee/ilhapura" target="_blank" class="card link-item" data-search="btg ilha pura">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=linktr.ee&sz=64" alt="BTG"></div>
-                    <span class="title">BTG Pura</span>
-                </a>
-            </div>
-        </section>
-
-        <section id="slide-escritorio" class="slide">
-            <div class="section-header"><h2>Escritório</h2><p>Ferramentas de Gestão e Arquivos</p></div>
-            <div class="grid">
-                <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" class="card link-item" data-search="gmail email">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=mail.google.com&sz=64" alt="Gmail"></div>
-                    <span class="title">Gmail</span>
-                </a>
-                <a href="https://drive.google.com/drive/u/0/my-drive" target="_blank" class="card link-item" data-search="google drive">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=drive.google.com&sz=64" alt="Drive"></div>
-                    <span class="title">Google Drive</span>
-                </a>
-                <a href="https://mega.nz" target="_blank" class="card link-item" data-search="mega nuvem">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=mega.nz&sz=64" alt="Mega"></div>
-                    <span class="title">Mega Drive</span>
-                </a>
-                <div class="card link-item" onclick="window.toggleCalc(event)" style="cursor:pointer;" data-search="calculadora">
-                    <div class="card-icon"><i class="fa-solid fa-calculator" style="color: #10b981;"></i></div>
-                    <span class="title">Calculadora</span>
-                    <div class="calc-wrapper" id="calc-app" onclick="event.stopPropagation()">
-                        <input type="text" id="calc-display" readonly style="margin-bottom:10px; text-align:right;">
-                        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:5px;">
-                            <button onclick="window.calc('7', event)" class="tool-btn">7</button><button onclick="window.calc('8', event)" class="tool-btn">8</button><button onclick="window.calc('9', event)" class="tool-btn">9</button><button onclick="window.calc('/', event)" class="tool-btn">/</button>
-                            <button onclick="window.calc('4', event)" class="tool-btn">4</button><button onclick="window.calc('5', event)" class="tool-btn">5</button><button onclick="window.calc('6', event)" class="tool-btn">6</button><button onclick="window.calc('*', event)" class="tool-btn">*</button>
-                            <button onclick="window.calc('1', event)" class="tool-btn">1</button><button onclick="window.calc('2', event)" class="tool-btn">2</button><button onclick="window.calc('3', event)" class="tool-btn">3</button><button onclick="window.calc('-', event)" class="tool-btn">-</button>
-                            <button onclick="window.calc('C', event)" class="tool-btn" style="background:#ef4444;">C</button><button onclick="window.calc('0', event)" class="tool-btn">0</button><button onclick="window.calc('=', event)" class="tool-btn" style="background:#10b981;">=</button><button onclick="window.calc('+', event)" class="tool-btn">+</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="slide-ia" class="slide">
-            <div class="section-header"><h2>Inteligência Artificial</h2><p>Assistentes Virtuais</p></div>
-            <div class="grid">
-                <a href="https://chatgpt.com/" target="_blank" class="card link-item" data-search="chatgpt openai">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64" alt="ChatGPT"></div>
+                <a href="https://chatgpt.com/" target="_blank" class="card link-item" data-search="chatgpt ia">
+                    <div class="card-icon"><i class="fa-solid fa-brain" style="color: #10b981;"></i></div>
                     <span class="title">ChatGPT</span>
-                </a>
-                <a href="https://claude.ai/" target="_blank" class="card link-item" data-search="claude anthropic">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=64" alt="Claude"></div>
-                    <span class="title">Claude IA</span>
-                </a>
-                <a href="https://gemini.google.com/" target="_blank" class="card link-item" data-search="gemini google">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64" alt="Gemini"></div>
-                    <span class="title">Gemini</span>
-                </a>
-                <a href="https://chat.deepseek.com/" target="_blank" class="card link-item" data-search="deepseek">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=deepseek.com&sz=64" alt="DeepSeek"></div>
-                    <span class="title">DeepSeek</span>
                 </a>
             </div>
         </section>
 
         <section id="slide-creator" class="slide">
-            <div class="section-header"><h2>Estúdio na Nuvem</h2><p>Gere e descarregue a sua imagem na hora!</p></div>
+            <div class="section-header"><h2>Estúdio</h2><p>Gere e descarregue na hora.</p></div>
             <div class="creator-grid">
-                
                 <div class="panel">
-                    <label style="display:block; margin-top:5px;">1. Foto do Imóvel</label>
-                    <input type="file" id="image-input" accept="image/*" onchange="window.processImage()" style="background: rgba(255,255,255,0.1);">
-                    
-                    <label style="display:block; margin-top:20px;">2. Título da Arte</label>
-                    <input type="text" id="p-title" placeholder="Ex: COBERTURA VISTA MAR" oninput="window.drawCanvas()">
-                    
-                    <label style="display:block; margin-top:20px;">3. Valor / Chamada</label>
-                    <input type="text" id="p-price" placeholder="Ex: R$ 1.850.000 ou LANÇAMENTO" oninput="window.drawCanvas()">
-                    
-                    <label style="display:block; margin-top:20px;">4. Descrição do Imóvel</label>
-                    <textarea id="p-desc" rows="4" placeholder="Ex: 3 quartos sendo 1 suíte, varanda gourmet..." oninput="window.drawCanvas()"></textarea>
-                    
-                    <button class="btn-primary" id="btn-save" onclick="window.downloadAndSaveImage()">BAIXAR ARTE E SALVAR</button>
+                    <input type="file" id="image-input" accept="image/*" onchange="window.processImage()">
+                    <input type="text" id="p-title" placeholder="TÍTULO DO IMÓVEL" oninput="window.drawCanvas()">
+                    <input type="text" id="p-price" placeholder="VALOR / DESTAQUE" oninput="window.drawCanvas()">
+                    <textarea id="p-desc" rows="4" placeholder="Descrição detalhada..." oninput="window.drawCanvas()"></textarea>
+                    <button class="btn-primary" id="btn-save" onclick="window.downloadAndSaveImage()">BAIXAR E SALVAR NA NUVEM</button>
                 </div>
-
-                <div class="panel" style="display: flex; flex-direction: column; align-items: center;">
-                    <label style="color:var(--gold-text); font-weight:bold; width: 100%;">Visualização Final</label>
+                <div class="panel">
                     <canvas id="preview-canvas" width="1080" height="1350"></canvas>
-                    <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 15px; text-align: center;">A assinatura "ALEXANDRE DAMASCENO | CRECI 106.899" é automática.</p>
                 </div>
-
             </div>
         </section>
-
     </main>
 
     <nav class="dock">
-        <button class="dock-item active" onclick="window.switchSlide('slide-sociais', this)"><i class="fa-solid fa-users"></i><span>Sociais</span></button>
-        <button class="dock-item" onclick="window.switchSlide('slide-vendas', this)"><i class="fa-solid fa-building"></i><span>Vendas</span></button>
-        <button class="dock-item" onclick="window.switchSlide('slide-escritorio', this)"><i class="fa-solid fa-briefcase"></i><span>Escritório</span></button>
-        <button class="dock-item" onclick="window.switchSlide('slide-ia', this)"><i class="fa-solid fa-brain"></i><span>IA</span></button>
-        <button class="dock-item" onclick="window.switchSlide('slide-creator', this)"><i class="fa-solid fa-cloud-arrow-up"></i><span>Estúdio</span></button>
+        <button class="dock-item active" onclick="window.switchSlide('slide-sociais', this)"><i class="fa-solid fa-users"></i><span>Links</span></button>
+        <button class="dock-item" onclick="window.switchSlide('slide-creator', this)"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Estúdio</span></button>
     </nav>
 
-    <div id="toast"><i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Sucesso! Arte pronta.</span></div>
+    <div id="toast">Sucesso! Arte pronta.</div>
 
     <script>
-        function updateClock() {
-            const clockEl = document.getElementById('clock');
-            if (clockEl) clockEl.textContent = new Date().toLocaleTimeString('pt-BR');
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+        // SISTEMA VISUAL (Relógio e Navegação)
+        setInterval(() => { document.getElementById('clock').textContent = new Date().toLocaleTimeString('pt-BR'); }, 1000);
 
-        let postCount = 0;
-        try {
-            postCount = parseInt(localStorage.getItem('postCount') || '0');
-            document.getElementById('post-count').textContent = postCount;
-        } catch (error) {}
-
-        window.switchSlide = function(slideId, dockElement) {
-            document.querySelectorAll('.slide').forEach(s => { s.style.display = 'none'; s.classList.remove('active'); });
+        window.switchSlide = (id, btn) => {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
-            const target = document.getElementById(slideId);
-            if(target) { target.style.display = 'block'; setTimeout(() => target.classList.add('active'), 10); }
-            if(dockElement) dockElement.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+            window.scrollTo(0,0);
         };
 
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            const slides = document.querySelectorAll('.slide');
-            if(term.length > 0) {
-                slides.forEach(s => { s.style.display = 'block'; s.classList.add('active'); });
-                document.querySelectorAll('.link-item').forEach(item => {
-                    const searchData = item.getAttribute('data-search') || "";
-                    item.style.display = (item.innerText.toLowerCase().includes(term) || searchData.includes(term)) ? 'flex' : 'none';
-                });
-            } else {
-                slides.forEach(s => { s.style.display = 'none'; s.classList.remove('active'); });
-                window.switchSlide('slide-sociais', document.querySelectorAll('.dock-item')[0]);
-            }
-        });
-
-        window.toggleCalc = function(event) { event.stopPropagation(); document.getElementById('calc-app').classList.toggle('show'); };
-        window.calc = function(val, event) {
-            event.stopPropagation();
-            const display = document.getElementById('calc-display');
-            if(val === 'C') display.value = '';
-            else if(val === '=') { try { display.value = eval(display.value); } catch(e) { display.value = 'Erro'; } }
-            else display.value += val;
-        };
-
+        // MOTOR DO CANVAS
         window.baseImage = new Image();
         const canvas = document.getElementById('preview-canvas');
         const ctx = canvas.getContext('2d');
+        ctx.fillStyle = "#111827"; ctx.fillRect(0,0,1080,1350);
 
-        ctx.fillStyle = "#111827";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "rgba(255,255,255,0.3)";
-        ctx.font = "30px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText("Insira a foto do imóvel acima", canvas.width/2, canvas.height/2);
-
-        window.processImage = function() {
-            const file = document.getElementById('image-input').files[0];
-            if(!file) return;
+        window.processImage = () => {
             const reader = new FileReader();
-            reader.onload = function(event) {
-                window.baseImage.onload = function() { window.drawCanvas(); }
-                window.baseImage.src = event.target.result;
-            }
-            reader.readAsDataURL(file);
+            reader.onload = (e) => { window.baseImage.onload = window.drawCanvas; window.baseImage.src = e.target.result; };
+            reader.readAsDataURL(document.getElementById('image-input').files[0]);
         };
 
-        function wrapText(context, text, x, y, maxWidth, lineHeight) {
-            const paragraphs = text.split('\n');
-            let currentY = y;
-            for(let p = 0; p < paragraphs.length; p++) {
-                let words = paragraphs[p].split(' ');
-                let line = '';
-                for(let n = 0; n < words.length; n++) {
-                    let testLine = line + words[n] + ' ';
-                    let metrics = context.measureText(testLine);
-                    if (metrics.width > maxWidth && n > 0) {
-                        context.fillText(line, x, currentY);
-                        line = words[n] + ' ';
-                        currentY += lineHeight;
-                    } else { line = testLine; }
-                }
-                context.fillText(line, x, currentY);
-                currentY += lineHeight;
-            }
-        }
-
-        window.drawCanvas = function() {
-            if (window.baseImage.src) {
-                const scale = Math.max(canvas.width / window.baseImage.width, canvas.height / window.baseImage.height);
-                const x = (canvas.width / 2) - (window.baseImage.width / 2) * scale;
-                const y = (canvas.height / 2) - (window.baseImage.height / 2) * scale;
-                ctx.drawImage(window.baseImage, x, y, window.baseImage.width * scale, window.baseImage.height * scale);
-            } else {
-                ctx.fillStyle = "#111827";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            }
-
-            const gradient = ctx.createLinearGradient(0, canvas.height * 0.4, 0, canvas.height);
-            gradient.addColorStop(0, "transparent");
-            gradient.addColorStop(0.3, "rgba(0,0,0,0.6)");
-            gradient.addColorStop(1, "rgba(0,0,0,0.95)");
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, canvas.height * 0.4, canvas.width, canvas.height * 0.6);
-
-            ctx.textAlign = "left";
-
-            ctx.fillStyle = "white";
-            ctx.font = "bold 55px Segoe UI, sans-serif";
-            const title = document.getElementById('p-title').value.toUpperCase() || "TÍTULO DO IMÓVEL";
-            ctx.fillText(title, 60, canvas.height - 300);
-
-            ctx.fillStyle = "#e8c97a";
-            ctx.font = "bold 45px Segoe UI, sans-serif";
-            const price = document.getElementById('p-price').value || "VALOR / DESTAQUE";
-            ctx.fillText(price, 60, canvas.height - 240);
-
-            ctx.fillStyle = "#cbd5e1";
-            ctx.font = "35px Segoe UI, sans-serif";
-            const desc = document.getElementById('p-desc').value;
-            if(desc) { wrapText(ctx, desc, 60, canvas.height - 180, 960, 45); } 
-            else { ctx.fillText("Adicione uma descrição detalhada...", 60, canvas.height - 180); }
-
-            ctx.strokeStyle = "rgba(255,255,255,0.2)";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(60, canvas.height - 90);
-            ctx.lineTo(1020, canvas.height - 90);
-            ctx.stroke();
-
-            ctx.fillStyle = "rgba(255,255,255,0.9)";
-            ctx.font = "bold 28px Segoe UI, sans-serif";
-            ctx.fillText("ALEXANDRE DAMASCENO | CRECI 106.899", 60, canvas.height - 40);
+        window.drawCanvas = () => {
+            if(window.baseImage.src) ctx.drawImage(window.baseImage, 0, 0, 1080, 1350);
+            ctx.fillStyle = "rgba(0,0,0,0.7)"; ctx.fillRect(0, 950, 1080, 400);
+            ctx.fillStyle = "white"; ctx.font = "bold 60px Poppins"; ctx.fillText(document.getElementById('p-title').value.toUpperCase() || "TÍTULO", 60, 1050);
+            ctx.fillStyle = "#e8c97a"; ctx.font = "50px Poppins"; ctx.fillText(document.getElementById('p-price').value || "VALOR", 60, 1130);
+            ctx.fillStyle = "white"; ctx.font = "bold 30px Poppins"; ctx.fillText("ALEXANDRE DAMASCENO | CRECI 106.899", 60, 1280);
         };
+
+        window.downloadAndSaveImage = () => { alert("Conectando ao banco de dados..."); };
     </script>
-
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
 
+        // CHAVES REAIS DO SEU PROJETO 'workspace-imobiliario'
         const firebaseConfig = {
-            apiKey: "AIzaSyBlN0-t5xR6V9v_u-mE3y_C5f1l5G8w_c",
-            authDomain: "workspace-alexandre-damasceno.firebaseapp.com",
-            projectId: "workspace-alexandre-damasceno",
-            storageBucket: "workspace-alexandre-damasceno.appspot.com",
-            messagingSenderId: "596144869389",
-            appId: "1:596144869389:web:9c976d8b67f3c7764d7c76"
+            apiKey: "AIzaSyCrF0p0v9ofISUWPnD-K8nhzXH30ENjuA",
+            authDomain: "workspace-imobiliario.firebaseapp.com",
+            projectId: "workspace-imobiliario",
+            storageBucket: "workspace-imobiliario.firebasestorage.app",
+            messagingSenderId: "46767058778",
+            appId: "1:46767058778:web:1522f9bc512320ce498d63"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const storage = getStorage(app);
 
-        // A NOVA FUNÇÃO QUE NÃO FAZ O UTILIZADOR ESPERAR
-        window.downloadAndSaveImage = async function() {
-            if(!window.baseImage || !window.baseImage.src) {
-                alert("Por favor, carregue a foto do imóvel primeiro.");
-                return;
-            }
-
+        window.downloadAndSaveImage = async () => {
             const btn = document.getElementById('btn-save');
-            const originalText = btn.innerText;
-            btn.innerText = "⏳ A GERAR IMAGEM...";
-            btn.disabled = true;
-
-            const canvasElement = document.getElementById('preview-canvas');
-            const title = document.getElementById('p-title').value || "Arte";
+            btn.disabled = true; btn.innerText = "A SALVAR...";
 
             try {
-                // 1. AÇÃO IMEDIATA: BAIXAR PARA O SEU COMPUTADOR/NOTEBOOK!
-                // Isto acontece em menos de 1 segundo.
+                // 1. BAIXAR NA HORA
                 const link = document.createElement('a');
-                link.download = `Imovel-${title.replace(/\s+/g, '-')}.png`;
-                link.href = canvasElement.toDataURL("image/png");
+                link.download = "imovel-arte.png";
+                link.href = canvas.toDataURL();
                 link.click();
 
-                // Mostra a mensagem visual de sucesso no site
-                const toast = document.getElementById('toast');
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 3000);
-
-                // Atualiza contadores
-                try {
-                    postCount++;
-                    localStorage.setItem('postCount', postCount);
-                    document.getElementById('post-count').textContent = postCount;
-                } catch(e) {}
-
-                // Muda o texto do botão para dizer que está tudo bem
-                btn.innerText = "✅ BAIXADO! SALVANDO CÓPIA NA NUVEM...";
-
-                // 2. AÇÃO EM SEGUNDO PLANO: TENTAR SALVAR NA NUVEM
-                // Você não precisa esperar isso terminar para fazer outra arte!
-                const blob = await new Promise((resolve) => canvasElement.toBlob(resolve, 'image/png'));
-                const filename = `artes/imovel_${Date.now()}.png`;
-                const storageRef = ref(storage, filename);
-                await uploadBytes(storageRef, blob);
-                const downloadURL = await getDownloadURL(storageRef);
-
-                const price = document.getElementById('p-price').value || "";
-                const desc = document.getElementById('p-desc').value || "";
+                // 2. SALVAR NA NUVEM
+                const blob = await new Promise(res => canvas.toBlob(res));
+                const fileRef = ref(storage, `artes/imovel_${Date.now()}.png`);
+                await uploadBytes(fileRef, blob);
+                const url = await getDownloadURL(fileRef);
 
                 await addDoc(collection(db, "historico_artes"), {
-                    titulo: title,
-                    valor: price,
-                    descricao: desc,
-                    imagemUrl: downloadURL,
-                    dataCriacao: serverTimestamp()
+                    titulo: document.getElementById('p-title').value,
+                    imagemUrl: url,
+                    data: serverTimestamp()
                 });
 
-                // Se a nuvem der certo, o botão volta ao normal logo.
-                btn.innerText = originalText;
-                btn.disabled = false;
-
-            } catch (error) {
-                console.error("Erro na Nuvem: ", error);
-                // Se a nuvem falhar (demorar muito), o botão simplesmente volta ao normal. 
-                // VOCÊ JÁ TEM A SUA FOTO GARANTIDA.
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
+                document.getElementById('toast').classList.add('show');
+                setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000);
+            } catch (e) { console.error(e); alert("Erro ao salvar na nuvem, mas a foto foi baixada."); }
+            
+            btn.disabled = false; btn.innerText = "BAIXAR ARTE E SALVAR NA NUVEM";
         };
     </script>
 </body>

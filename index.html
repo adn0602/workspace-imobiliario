@@ -29,7 +29,7 @@
         .background-anim::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px; transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px); animation: gridMove 20s linear infinite; }
         @keyframes gridMove { 0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); } 100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); } }
 
-        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); position: sticky; top: 0; z-index: 1000; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); position: sticky; top: 0; z-index: 1000; flex-wrap: wrap; gap: 10px; }
         .clock-widget { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--gold-text); }
         .post-counter { font-size: 1rem; color: #94a3b8; display: flex; align-items: center; gap: 8px; }
         .post-counter span { background: var(--gold-gradient); color: #000; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
@@ -48,7 +48,7 @@
         .section-header p { color: #94a3b8; font-size: 1.1rem; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center; color: var(--text-main); transition: 0.3s; position: relative; }
+        .card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center; color: var(--text-main); transition: 0.3s; position: relative; cursor: pointer; }
         .card:hover { transform: translateY(-8px); border-color: var(--gold-text); background: rgba(255,255,255,0.05); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
         .card-icon { width: 55px; height: 55px; margin-bottom: 15px; border-radius: 12px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
         .card-icon img { width: 35px; height: 35px; border-radius: 8px; }
@@ -95,6 +95,21 @@
 
         #toast { position: fixed; top: 80px; right: 30px; background: #10b981; color: white; padding: 15px 25px; border-radius: 12px; font-weight: bold; font-size: 1.1rem; transform: translateX(150%); transition: 0.4s; z-index: 3000; display: flex; align-items: center; gap: 10px; }
         #toast.show { transform: translateX(0); }
+
+        .status-badge { position: fixed; bottom: 100px; right: 20px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; z-index: 9999; border: 1px solid rgba(255,255,255,0.2); }
+        
+        .history-section { margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.2); }
+        .history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; max-height: 400px; overflow-y: auto; padding: 10px; }
+        .history-item { background: rgba(0,0,0,0.5); border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.3s; }
+        .history-item:hover { transform: scale(1.05); border: 1px solid var(--gold-text); }
+        .history-item img { width: 100%; height: 150px; object-fit: cover; }
+        .history-item p { padding: 10px; font-size: 0.8rem; text-align: center; }
+
+        .tool-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .tool-btn:hover { background: var(--gold-text); color: black; }
+        
+        .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(0,0,0,.3); border-radius: 50%; border-top-color: #000; animation: spin 1s ease-in-out infinite; margin-right: 10px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -245,7 +260,10 @@
                     <label style="display:block; margin-top:20px;">4. Descrição do Imóvel</label>
                     <textarea id="p-desc" rows="4" placeholder="Ex: 3 quartos sendo 1 suíte, varanda gourmet..." oninput="window.drawCanvas()"></textarea>
                     
-                    <button class="btn-primary" id="btn-save" onclick="window.downloadAndSaveImage()">BAIXAR ARTE E SALVAR</button>
+                    <button class="btn-primary" id="btn-save" onclick="window.downloadAndSaveImage()">
+                        <span id="btn-text">💾 BAIXAR E SALVAR NO GOOGLE DRIVE</span>
+                    </button>
+                    <button class="btn-primary" id="btn-history" onclick="window.showHistory()" style="background: var(--blue-gradient); margin-top: 10px;">📜 VER HISTÓRICO</button>
                 </div>
 
                 <div class="panel" style="display: flex; flex-direction: column; align-items: center;">
@@ -254,6 +272,14 @@
                     <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 15px; text-align: center;">A assinatura "ALEXANDRE DAMASCENO | CRECI 106.899" é automática.</p>
                 </div>
 
+            </div>
+
+            <!-- Seção de Histórico -->
+            <div class="history-section" id="history-section" style="display: none;">
+                <div class="section-header"><h2>📸 Histórico de Artes</h2><p>Últimas criações salvas no Google Drive</p></div>
+                <div class="history-grid" id="history-grid">
+                    <div style="text-align: center; padding: 20px;">Clique em "Ver Histórico" para carregar</div>
+                </div>
             </div>
         </section>
 
@@ -268,8 +294,22 @@
     </nav>
 
     <div id="toast"><i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Sucesso! Arte pronta.</span></div>
+    
+    <div class="status-badge" id="status-badge">
+        <i class="fa-solid fa-cloud"></i>
+        <span id="firebase-status">✅ Salvando no Google Drive</span>
+    </div>
+
+    <!-- Modal para visualizar imagem em tamanho maior -->
+    <div id="image-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; justify-content: center; align-items: center; cursor: pointer;">
+        <img id="modal-image" style="max-width: 90%; max-height: 90%; object-fit: contain;">
+        <button onclick="document.getElementById('image-modal').style.display='none'" style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.8); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 1.2rem;">✕ Fechar</button>
+    </div>
 
     <script>
+        // ✅ URL DO SEU GOOGLE APPS SCRIPT (JÁ CONFIGURADA)
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzgl5mJQXUGt8iTrkc3YGcA970BzkUMVk2NEvEDlicS3nazk8ph-dWMPuTzl3Z_TRU/exec";
+        
         function updateClock() {
             const clockEl = document.getElementById('clock');
             if (clockEl) clockEl.textContent = new Date().toLocaleTimeString('pt-BR');
@@ -283,6 +323,15 @@
             document.getElementById('post-count').textContent = postCount;
         } catch (error) {}
 
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.textContent = message;
+            toast.style.background = isError ? '#ef4444' : '#10b981';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
         window.switchSlide = function(slideId, dockElement) {
             document.querySelectorAll('.slide').forEach(s => { s.style.display = 'none'; s.classList.remove('active'); });
             document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
@@ -290,6 +339,9 @@
             if(target) { target.style.display = 'block'; setTimeout(() => target.classList.add('active'), 10); }
             if(dockElement) dockElement.classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            const historySection = document.getElementById('history-section');
+            if(historySection) historySection.style.display = 'none';
         };
 
         document.getElementById('search-input').addEventListener('input', (e) => {
@@ -307,34 +359,61 @@
             }
         });
 
-        window.toggleCalc = function(event) { event.stopPropagation(); document.getElementById('calc-app').classList.toggle('show'); };
+        window.toggleCalc = function(event) { 
+            event.stopPropagation(); 
+            const calc = document.getElementById('calc-app');
+            calc.classList.toggle('show');
+        };
+        
         window.calc = function(val, event) {
             event.stopPropagation();
             const display = document.getElementById('calc-display');
             if(val === 'C') display.value = '';
-            else if(val === '=') { try { display.value = eval(display.value); } catch(e) { display.value = 'Erro'; } }
+            else if(val === '=') { 
+                try { 
+                    display.value = eval(display.value); 
+                } catch(e) { 
+                    display.value = 'Erro'; 
+                } 
+            }
             else display.value += val;
         };
 
+        // Canvas functions
         window.baseImage = new Image();
         const canvas = document.getElementById('preview-canvas');
         const ctx = canvas.getContext('2d');
 
-        ctx.fillStyle = "#111827";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "rgba(255,255,255,0.3)";
-        ctx.font = "30px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText("Insira a foto do imóvel acima", canvas.width/2, canvas.height/2);
+        function initCanvas() {
+            ctx.fillStyle = "#111827";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(255,255,255,0.3)";
+            ctx.font = "30px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("Insira a foto do imóvel acima", canvas.width/2, canvas.height/2);
+        }
+        initCanvas();
 
         window.processImage = function() {
             const file = document.getElementById('image-input').files[0];
-            if(!file) return;
+            if(!file) {
+                showToast("Selecione uma imagem primeiro!", true);
+                return;
+            }
+            
+            if(!file.type.startsWith('image/')) {
+                showToast("Por favor, selecione um arquivo de imagem válido!", true);
+                return;
+            }
+            
             const reader = new FileReader();
             reader.onload = function(event) {
-                window.baseImage.onload = function() { window.drawCanvas(); }
+                window.baseImage.onload = function() { 
+                    window.drawCanvas(); 
+                    showToast("✅ Imagem carregada com sucesso!");
+                };
                 window.baseImage.src = event.target.result;
-            }
+            };
             reader.readAsDataURL(file);
         };
 
@@ -359,10 +438,11 @@
         }
 
         window.drawCanvas = function() {
-            if (window.baseImage.src) {
+            if (window.baseImage && window.baseImage.src && window.baseImage.complete) {
                 const scale = Math.max(canvas.width / window.baseImage.width, canvas.height / window.baseImage.height);
                 const x = (canvas.width / 2) - (window.baseImage.width / 2) * scale;
                 const y = (canvas.height / 2) - (window.baseImage.height / 2) * scale;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(window.baseImage, x, y, window.baseImage.width * scale, window.baseImage.height * scale);
             } else {
                 ctx.fillStyle = "#111827";
@@ -405,95 +485,121 @@
             ctx.font = "bold 28px Segoe UI, sans-serif";
             ctx.fillText("ALEXANDRE DAMASCENO | CRECI 106.899", 60, canvas.height - 40);
         };
-    </script>
 
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBlN0-t5xR6V9v_u-mE3y_C5f1l5G8w_c",
-            authDomain: "workspace-alexandre-damasceno.firebaseapp.com",
-            projectId: "workspace-alexandre-damasceno",
-            storageBucket: "workspace-alexandre-damasceno.appspot.com",
-            messagingSenderId: "596144869389",
-            appId: "1:596144869389:web:9c976d8b67f3c7764d7c76"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const storage = getStorage(app);
-
-        // A NOVA FUNÇÃO QUE NÃO FAZ O UTILIZADOR ESPERAR
+        // Função para salvar no Google Drive
         window.downloadAndSaveImage = async function() {
-            if(!window.baseImage || !window.baseImage.src) {
-                alert("Por favor, carregue a foto do imóvel primeiro.");
+            if(!window.baseImage || !window.baseImage.src || !window.baseImage.complete) {
+                showToast("⚠️ Por favor, carregue a foto do imóvel primeiro.", true);
                 return;
             }
 
             const btn = document.getElementById('btn-save');
-            const originalText = btn.innerText;
-            btn.innerText = "⏳ A GERAR IMAGEM...";
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="loading-spinner"></span> SALVANDO NO GOOGLE DRIVE...';
             btn.disabled = true;
 
             const canvasElement = document.getElementById('preview-canvas');
-            const title = document.getElementById('p-title').value || "Arte";
+            const title = document.getElementById('p-title').value || "Arte sem título";
 
             try {
-                // 1. AÇÃO IMEDIATA: BAIXAR PARA O SEU COMPUTADOR/NOTEBOOK!
-                // Isto acontece em menos de 1 segundo.
+                // 1. Baixar imediatamente para o computador
                 const link = document.createElement('a');
-                link.download = `Imovel-${title.replace(/\s+/g, '-')}.png`;
+                const fileName = `Imovel-${title.replace(/\s+/g, '-')}-${Date.now()}.png`;
+                link.download = fileName;
                 link.href = canvasElement.toDataURL("image/png");
                 link.click();
-
-                // Mostra a mensagem visual de sucesso no site
-                const toast = document.getElementById('toast');
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 3000);
-
-                // Atualiza contadores
-                try {
-                    postCount++;
-                    localStorage.setItem('postCount', postCount);
-                    document.getElementById('post-count').textContent = postCount;
-                } catch(e) {}
-
-                // Muda o texto do botão para dizer que está tudo bem
-                btn.innerText = "✅ BAIXADO! SALVANDO CÓPIA NA NUVEM...";
-
-                // 2. AÇÃO EM SEGUNDO PLANO: TENTAR SALVAR NA NUVEM
-                // Você não precisa esperar isso terminar para fazer outra arte!
-                const blob = await new Promise((resolve) => canvasElement.toBlob(resolve, 'image/png'));
-                const filename = `artes/imovel_${Date.now()}.png`;
-                const storageRef = ref(storage, filename);
-                await uploadBytes(storageRef, blob);
-                const downloadURL = await getDownloadURL(storageRef);
-
-                const price = document.getElementById('p-price').value || "";
-                const desc = document.getElementById('p-desc').value || "";
-
-                await addDoc(collection(db, "historico_artes"), {
-                    titulo: title,
-                    valor: price,
-                    descricao: desc,
-                    imagemUrl: downloadURL,
-                    dataCriacao: serverTimestamp()
+                
+                showToast("✅ Imagem baixada! Enviando para o Google Drive...");
+                
+                // 2. Enviar para o Google Drive via Apps Script
+                const imagemDataURL = canvasElement.toDataURL("image/png");
+                
+                const formData = new FormData();
+                formData.append('imagem', imagemDataURL);
+                formData.append('titulo', title);
+                formData.append('valor', document.getElementById('p-price').value || "");
+                formData.append('descricao', document.getElementById('p-desc').value || "");
+                
+                // Envia para o Google Apps Script
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
                 });
-
-                // Se a nuvem der certo, o botão volta ao normal logo.
-                btn.innerText = originalText;
-                btn.disabled = false;
-
+                
+                // Salvar também no localStorage para histórico rápido
+                const artRecord = {
+                    id: Date.now(),
+                    titulo: title,
+                    valor: document.getElementById('p-price').value || "",
+                    descricao: document.getElementById('p-desc').value || "",
+                    imagemUrl: imagemDataURL,
+                    data: new Date().toISOString()
+                };
+                
+                let history = JSON.parse(localStorage.getItem('artes_historico') || '[]');
+                history.unshift(artRecord);
+                if (history.length > 20) history = history.slice(0, 20);
+                localStorage.setItem('artes_historico', JSON.stringify(history));
+                
+                postCount++;
+                localStorage.setItem('postCount', postCount);
+                document.getElementById('post-count').textContent = postCount;
+                
+                showToast("✅ Arte salva no Google Drive e baixada no computador!");
+                
+                // Limpar campos
+                document.getElementById('p-title').value = "";
+                document.getElementById('p-price').value = "";
+                document.getElementById('p-desc').value = "";
+                document.getElementById('image-input').value = "";
+                initCanvas();
+                window.baseImage = new Image();
+                
             } catch (error) {
-                console.error("Erro na Nuvem: ", error);
-                // Se a nuvem falhar (demorar muito), o botão simplesmente volta ao normal. 
-                // VOCÊ JÁ TEM A SUA FOTO GARANTIDA.
-                btn.innerText = originalText;
+                console.error("Erro:", error);
+                showToast("✅ Arte baixada! O arquivo está no seu computador.", true);
+            } finally {
+                btn.innerHTML = originalText;
                 btn.disabled = false;
             }
+        };
+
+        window.showHistory = function() {
+            const historySection = document.getElementById('history-section');
+            const historyGrid = document.getElementById('history-grid');
+            
+            historySection.style.display = 'block';
+            
+            const history = JSON.parse(localStorage.getItem('artes_historico') || '[]');
+            
+            if (history.length === 0) {
+                historyGrid.innerHTML = '<div style="text-align: center; padding: 20px;">📭 Nenhuma arte salva ainda. Crie sua primeira arte!</div>';
+                return;
+            }
+            
+            historyGrid.innerHTML = '';
+            history.forEach((item) => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.onclick = () => {
+                    const modal = document.getElementById('image-modal');
+                    const modalImg = document.getElementById('modal-image');
+                    modalImg.src = item.imagemUrl;
+                    modal.style.display = 'flex';
+                };
+                
+                const dataFormatada = new Date(item.data).toLocaleDateString('pt-BR');
+                div.innerHTML = `
+                    <img src="${item.imagemUrl}" alt="${item.titulo}" loading="lazy">
+                    <p><strong>${item.titulo.substring(0, 30) || 'Sem título'}</strong><br>
+                    ${item.valor ? item.valor.substring(0, 20) : 'Sem valor'}<br>
+                    <small style="font-size: 0.7rem;">${dataFormatada}</small></p>
+                `;
+                historyGrid.appendChild(div);
+            });
+            
+            showToast(`📸 ${history.length} artes no histórico!`);
         };
     </script>
 </body>

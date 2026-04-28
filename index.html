@@ -4,88 +4,246 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Workspace | Alexandre Damasceno</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#020617">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
         :root {
-            --bg: #050505;
-            --gold: #bf953f;
-            --gold-light: #fcf6ba;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
+            --bg-dark: #050505;
+            --glass-bg: rgba(20, 25, 40, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 45%, #b38728 100%);
+            --text-main: #f8fafc;
+            --gold-text: #e8c97a;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background: var(--bg); color: white; min-height: 100vh; padding-bottom: 100px; }
-        
-        header { padding: 20px; background: rgba(0,0,0,0.8); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .clock { color: var(--gold); font-weight: bold; font-size: 1.2rem; }
 
-        .container { padding: 20px; max-width: 800px; margin: auto; }
-        .slide { display: none; }
-        .slide.active { display: block; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Lato', sans-serif; overflow-x: hidden; min-height: 100vh; }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .card { background: var(--glass); border: 1px solid var(--border); border-radius: 15px; padding: 20px; text-decoration: none; color: white; text-align: center; }
-        .card i { font-size: 1.5rem; color: var(--gold); margin-bottom: 10px; }
+        .background-anim { position: fixed; inset: 0; z-index: -1; pointer-events: none; background-image: radial-gradient(circle at 15% 50%, rgba(201, 168, 76, 0.08), transparent 25%), radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 25%); }
+        .background-anim::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px; transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px); animation: gridMove 20s linear infinite; }
+        @keyframes gridMove { 0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); } 100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); } }
 
-        .panel { background: var(--glass); border-radius: 15px; padding: 20px; border: 1px solid var(--border); margin-bottom: 20px; }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid var(--border); color: white; border-radius: 8px; }
-        
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; background: linear-gradient(135deg, #bf953f 0%, #fcf6ba 100%); color: #000; }
-        .btn:disabled { opacity: 0.5; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); position: sticky; top: 0; z-index: 1000; }
+        .clock-widget { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--gold-text); }
+        .post-counter { font-size: 1rem; color: #94a3b8; display: flex; align-items: center; gap: 8px; }
+        .post-counter span { background: var(--gold-gradient); color: #000; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
 
-        #preview-canvas { width: 100%; border-radius: 10px; background: #111; margin-top: 15px; border: 1px solid var(--border); }
+        .search-container { padding: 20px 30px 0; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
+        .search-bar { width: 100%; background: var(--glass-bg); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 15px; padding: 15px 25px; color: white; font-size: 1.2rem; backdrop-filter: blur(10px); outline: none; }
 
-        .dock { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: rgba(15,15,15,0.95); border: 1px solid var(--border); border-radius: 40px; display: flex; justify-content: space-around; padding: 10px; backdrop-filter: blur(10px); }
-        .dock-btn { background: none; border: none; color: #666; cursor: pointer; font-size: 0.7rem; font-weight: bold; }
-        .dock-btn.active { color: var(--gold); }
-        .dock-btn i { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 30px; padding-bottom: 150px; position: relative; z-index: 10; }
+        .slide { display: none; opacity: 0; transform: translateY(20px); }
+        .slide.active { display: block; opacity: 1; transform: translateY(0); transition: 0.4s; }
+
+        .section-header { margin-bottom: 25px; font-family: 'Poppins'; }
+        .section-header h2 { font-size: 2rem; }
+        .section-header p { color: #94a3b8; font-size: 1.1rem; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        .card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center; color: var(--text-main); transition: 0.3s; }
+        .card:hover { transform: translateY(-8px); border-color: var(--gold-text); }
+        .card-icon { width: 55px; height: 55px; margin-bottom: 15px; border-radius: 12px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        .card-icon img { width: 35px; height: 35px; border-radius: 8px; }
+        .card .title { font-size: 1.1rem; font-weight: 700; font-family: 'Poppins'; }
+        .card .sub { font-size: 0.8rem; color: #94a3b8; margin-top: 5px; }
+
+        .creator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media (max-width: 800px) { .creator-grid { grid-template-columns: 1fr; } }
+        .panel { background: var(--glass-bg); border-radius: 20px; padding: 25px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(15px); }
+        textarea, input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: white; padding: 15px; font-size: 1.1rem; margin-top: 10px; }
+        .btn-primary { width: 100%; background: var(--gold-gradient); color: #000; border: none; padding: 20px; border-radius: 15px; font-size: 1.2rem; font-weight: 800; cursor: pointer; margin-top: 15px; text-transform: uppercase; }
+
+        #preview-canvas { width: 100%; border-radius: 15px; border: 1px solid var(--glass-border); margin-top: 15px; background: #000; }
+
+        .dock { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 25, 0.95); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 40px; display: flex; gap: 5px; z-index: 99999; width: 90%; max-width: 600px; justify-content: space-around; }
+        .dock-item { background: transparent; border: none; color: #94a3b8; cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 12px 5px; flex: 1; transition: 0.3s; }
+        .dock-item.active { color: #c9a84c; }
+        .dock-item i { font-size: 1.6rem; margin-bottom: 5px; }
+        .dock-item span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+
+        .calc-wrapper { display: none; margin-top: 15px; width: 100%; }
+        .calc-wrapper.show { display: block; }
+        .tool-btn { background: rgba(255,255,255,0.1); border: none; border-radius: 8px; padding: 8px; cursor: pointer; color: white; }
+
+        #toast { position: fixed; top: 80px; right: 30px; background: #10b981; color: white; padding: 15px 25px; border-radius: 12px; font-weight: bold; transform: translateX(150%); transition: 0.4s; z-index: 3000; }
+        #toast.show { transform: translateX(0); }
     </style>
 </head>
 <body>
 
-    <header>
-        <div style="font-weight: 800; letter-spacing: 1px;">ALEXANDRE DAMASCENO</div>
-        <div class="clock" id="clock">00:00:00</div>
+    <div class="background-anim"></div>
+
+    <header class="top-bar">
+        <div class="post-counter"><i class="fa-solid fa-cloud-arrow-up"></i> Criadas: <span id="post-count">0</span></div>
+        <div class="clock-widget" id="clock">00:00:00</div>
     </header>
 
-    <div class="container">
-        <section id="slide-links" class="slide active">
-            <div class="grid">
-                <a href="https://wa.me/5521972653971" class="card"><i class="fab fa-whatsapp"></i><br>WhatsApp</a>
-                <a href="https://www.instagram.com/alexandredamasceno.corretor" class="card"><i class="fab fa-instagram"></i><br>Instagram</a>
-                <a href="https://chatgpt.com/" class="card"><i class="fas fa-robot"></i><br>ChatGPT</a>
-            </div>
-        </section>
-
-        <section id="slide-estudio" class="slide">
-            <div class="panel">
-                <label>Foto do Imóvel</label>
-                <input type="file" id="img-in" accept="image/*" onchange="window.loadImg()">
-                <input type="text" id="tit" placeholder="TÍTULO (Ex: Cobertura Pura)" oninput="window.render()">
-                <input type="text" id="val" placeholder="VALOR (Ex: R$ 1.500.000)" oninput="window.render()">
-                <textarea id="des" placeholder="Descrição rápida..." oninput="window.render()"></textarea>
-                <button class="btn" id="btn-save" onclick="window.save()">Baixar Arte e Salvar</button>
-            </div>
-            <canvas id="preview-canvas" width="1080" height="1350"></canvas>
-        </section>
+    <div class="search-container">
+        <input type="text" id="search-input" class="search-bar" placeholder="🔍 Buscar links (Pura, Insta, ChatGPT)...">
     </div>
 
+    <main class="main-content">
+        <section id="slide-sociais" class="slide active">
+            <div class="section-header"><h2>Redes Sociais</h2><p>Presença Digital</p></div>
+            <div class="grid">
+                <a href="https://wa.me/5521972653971" target="_blank" class="card link-item" data-search="whatsapp zap">
+                    <div class="card-icon"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i></div>
+                    <span class="title">WhatsApp</span><span class="sub">Profissional</span>
+                </a>
+                <a href="https://www.instagram.com/alexandredamasceno.corretor" target="_blank" class="card link-item" data-search="instagram">
+                    <div class="card-icon"><i class="fa-brands fa-instagram" style="color: #E1306C;"></i></div>
+                    <span class="title">Insta Prof.</span>
+                </a>
+                <a href="https://www.facebook.com/alexandre.damasceno.nascimento" target="_blank" class="card link-item" data-search="facebook">
+                    <div class="card-icon"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i></div>
+                    <span class="title">Facebook</span>
+                </a>
+                <a href="https://www.tiktok.com/@alexandrecorretor106899" target="_blank" class="card link-item" data-search="tiktok">
+                    <div class="card-icon"><i class="fa-brands fa-tiktok"></i></div>
+                    <span class="title">TikTok</span>
+                </a>
+            </div>
+        </section>
+
+        <section id="slide-vendas" class="slide">
+            <div class="section-header"><h2>Vendas</h2><p>Incorporadoras</p></div>
+            <div class="grid">
+                <a href="https://linktr.ee/comercialcalper" target="_blank" class="card link-item" data-search="calper"><div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=calper.com.br&sz=64"></div><span class="title">Calper</span></a>
+                <a href="https://linktr.ee/opp.claudioaguimaraes" target="_blank" class="card link-item" data-search="opportunity"><div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=opportunity.com.br&sz=64"></div><span class="title">Opportunity</span></a>
+                <a href="https://linktr.ee/ilhapura" target="_blank" class="card link-item" data-search="btg ilha pura"><div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=ilhapura.com.br&sz=64"></div><span class="title">BTG Pura</span></a>
+                <a href="https://linktr.ee/comercial_calcada" target="_blank" class="card link-item" data-search="calcada"><div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=calcada.com.br&sz=64"></div><span class="title">Calçada</span></a>
+            </div>
+        </section>
+
+        <section id="slide-escritorio" class="slide">
+            <div class="section-header"><h2>Escritório</h2><p>Ferramentas</p></div>
+            <div class="grid">
+                <a href="https://mail.google.com" target="_blank" class="card link-item" data-search="gmail"><div class="card-icon"><i class="fa-solid fa-envelope" style="color: #ea4335;"></i></div><span class="title">Gmail</span></a>
+                <a href="https://drive.google.com" target="_blank" class="card link-item" data-search="drive"><div class="card-icon"><i class="fa-solid fa-hard-drive" style="color: #34a853;"></i></div><span class="title">Drive</span></a>
+                <div class="card link-item" onclick="window.toggleCalc(event)" style="cursor:pointer;" data-search="calculadora">
+                    <div class="card-icon"><i class="fa-solid fa-calculator" style="color: #10b981;"></i></div>
+                    <span class="title">Calculadora</span>
+                    <div class="calc-wrapper" id="calc-app" onclick="event.stopPropagation()">
+                        <input type="text" id="calc-display" readonly style="margin-bottom:5px; text-align:right;">
+                        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:5px;">
+                            <button onclick="window.calc('7', event)" class="tool-btn">7</button><button onclick="window.calc('8', event)" class="tool-btn">8</button><button onclick="window.calc('9', event)" class="tool-btn">9</button><button onclick="window.calc('/', event)" class="tool-btn">/</button>
+                            <button onclick="window.calc('C', event)" class="tool-btn" style="background:#ef4444;">C</button><button onclick="window.calc('0', event)" class="tool-btn">0</button><button onclick="window.calc('=', event)" class="tool-btn" style="background:#10b981;">=</button><button onclick="window.calc('+', event)" class="tool-btn">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="slide-ia" class="slide">
+            <div class="section-header"><h2>IA</h2><p>Assistentes</p></div>
+            <div class="grid">
+                <a href="https://chatgpt.com/" target="_blank" class="card link-item" data-search="chatgpt"><div class="card-icon"><i class="fa-solid fa-robot" style="color: #10b981;"></i></div><span class="title">ChatGPT</span></a>
+                <a href="https://claude.ai/" target="_blank" class="card link-item" data-search="claude"><div class="card-icon"><i class="fa-solid fa-brain" style="color: #d97706;"></i></div><span class="title">Claude</span></a>
+                <a href="https://gemini.google.com/" target="_blank" class="card link-item" data-search="gemini"><div class="card-icon"><i class="fa-solid fa-sparkles" style="color: #3b82f6;"></i></div><span class="title">Gemini</span></a>
+            </div>
+        </section>
+
+        <section id="slide-creator" class="slide">
+            <div class="section-header"><h2>Estúdio</h2><p>Criação de Artes</p></div>
+            <div class="creator-grid">
+                <div class="panel">
+                    <input type="file" id="img-in" accept="image/*" onchange="window.processImage()">
+                    <input type="text" id="tit" placeholder="TÍTULO DO IMÓVEL" oninput="window.drawCanvas()">
+                    <input type="text" id="val" placeholder="VALOR / DESTAQUE" oninput="window.drawCanvas()">
+                    <textarea id="des" placeholder="Descrição rápida..." oninput="window.drawCanvas()"></textarea>
+                    <button class="btn-primary" id="btn-save" onclick="window.save()">BAIXAR E SALVAR NA NUVEM</button>
+                </div>
+                <div class="panel">
+                    <canvas id="preview-canvas" width="1080" height="1350"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
     <nav class="dock">
-        <button class="dock-btn active" onclick="window.tab('slide-links', this)"><i class="fas fa-link"></i>Links</button>
-        <button class="dock-item" style="background:none; border:none; color:#666;" onclick="window.tab('slide-estudio', this)"><i class="fas fa-camera"></i>Estúdio</button>
+        <button class="dock-item active" onclick="window.switchSlide('slide-sociais', this)"><i class="fa-solid fa-users"></i><span>Links</span></button>
+        <button class="dock-item" onclick="window.switchSlide('slide-vendas', this)"><i class="fa-solid fa-building"></i><span>Vendas</span></button>
+        <button class="dock-item" onclick="window.switchSlide('slide-escritorio', this)"><i class="fa-solid fa-briefcase"></i><span>Esc</span></button>
+        <button class="dock-item" onclick="window.switchSlide('slide-ia', this)"><i class="fa-solid fa-brain"></i><span>IA</span></button>
+        <button class="dock-item" onclick="window.switchSlide('slide-creator', this)"><i class="fa-solid fa-camera"></i><span>Estúdio</span></button>
     </nav>
+
+    <div id="toast">Sucesso! Arte pronta.</div>
+
+    <script>
+        // RELÓGIO E NAV
+        setInterval(() => { document.getElementById('clock').textContent = new Date().toLocaleTimeString('pt-BR'); }, 1000);
+        window.switchSlide = (id, btn) => {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+            window.scrollTo(0,0);
+        };
+
+        // PESQUISA
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            if(term.length > 0) {
+                document.querySelectorAll('.slide').forEach(s => s.classList.add('active'));
+                document.querySelectorAll('.link-item').forEach(item => {
+                    const data = item.getAttribute('data-search') || "";
+                    item.style.display = (item.innerText.toLowerCase().includes(term) || data.includes(term)) ? 'flex' : 'none';
+                });
+            } else {
+                document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+                window.switchSlide('slide-sociais', document.querySelector('.dock-item'));
+            }
+        });
+
+        // CALC
+        window.toggleCalc = (e) => { e.stopPropagation(); document.getElementById('calc-app').classList.toggle('show'); };
+        window.calc = (v, e) => {
+            e.stopPropagation(); const d = document.getElementById('calc-display');
+            if(v === 'C') d.value = ''; else if(v === '=') { try{d.value = eval(d.value)}catch{d.value='Erro'} } else d.value += v;
+        };
+
+        // CANVAS
+        window.baseImage = new Image();
+        const cv = document.getElementById('preview-canvas');
+        const ctx = cv.getContext('2d');
+        ctx.fillStyle = "#111"; ctx.fillRect(0,0,1080,1350);
+
+        window.processImage = () => {
+            const reader = new FileReader();
+            reader.onload = (e) => { window.baseImage.onload = window.drawCanvas; window.baseImage.src = e.target.result; };
+            reader.readAsDataURL(document.getElementById('img-in').files[0]);
+        };
+
+        window.drawCanvas = () => {
+            ctx.fillStyle = "#000"; ctx.fillRect(0,0,1080,1350);
+            if(window.baseImage.src) {
+                const r = Math.max(cv.width/window.baseImage.width, cv.height/window.baseImage.height);
+                ctx.drawImage(window.baseImage, (cv.width-window.baseImage.width*r)/2, (cv.height-window.baseImage.height*r)/2, window.baseImage.width*r, window.baseImage.height*r);
+            }
+            ctx.fillStyle = "rgba(0,0,0,0.75)"; ctx.fillRect(0, 980, 1080, 370);
+            ctx.fillStyle = "#fff"; ctx.font = "bold 55px Arial"; ctx.fillText(document.getElementById('tit').value.toUpperCase() || "TÍTULO", 60, 1080);
+            ctx.fillStyle = "#e8c97a"; ctx.font = "45px Arial"; ctx.fillText(document.getElementById('val').value || "VALOR", 60, 1160);
+            ctx.fillStyle = "white"; ctx.font = "bold 32px Arial"; ctx.fillText("ALEXANDRE DAMASCENO | CRECI 106.899", 60, 1290);
+        };
+    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
 
-        // CONFIGURAÇÃO REAL EXTRAÍDA DA TUA FOTO
+        // CHAVES REAIS DO PROJETO workspace-imobiliario
         const firebaseConfig = {
             apiKey: "AIzaSyCrF0p0v9ofISUWPnD-K8nhzXH30ENjuA",
             authDomain: "workspace-imobiliario.firebaseapp.com",
             projectId: "workspace-imobiliario",
-            storageBucket: "workspace-imobiliario.appspot.com",
+            storageBucket: "workspace-imobiliario.firebasestorage.app",
             messagingSenderId: "46767058778",
             appId: "1:46767058778:web:1522f9bc512320ce498d63"
         };
@@ -94,51 +252,17 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
 
-        // RELÓGIO E TABS
-        setInterval(() => { document.getElementById('clock').textContent = new Date().toLocaleTimeString('pt-BR'); }, 1000);
-        window.tab = (id, b) => {
-            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        };
-
-        // CANVAS
-        const cv = document.getElementById('preview-canvas');
-        const ctx = cv.getContext('2d');
-        let base = new Image();
-
-        window.loadImg = () => {
-            const r = new FileReader();
-            r.onload = (e) => { base.onload = window.render; base.src = e.target.result; };
-            r.readAsDataURL(document.getElementById('img-in').files[0]);
-        };
-
-        window.render = () => {
-            ctx.fillStyle = "#000"; ctx.fillRect(0,0,1080,1350);
-            if(base.src) ctx.drawImage(base, 0, 0, 1080, 1350);
-            
-            ctx.fillStyle = "rgba(0,0,0,0.7)"; ctx.fillRect(0, 950, 1080, 400);
-            ctx.fillStyle = "#fff"; ctx.font = "bold 60px sans-serif";
-            ctx.fillText(document.getElementById('tit').value.toUpperCase() || "TÍTULO", 60, 1050);
-            ctx.fillStyle = "#bf953f"; ctx.font = "50px sans-serif";
-            ctx.fillText(document.getElementById('val').value || "R$ 0,00", 60, 1130);
-            ctx.fillStyle = "#aaa"; ctx.font = "30px sans-serif";
-            ctx.fillText("ALEXANDRE DAMASCENO | CRECI 106.899", 60, 1280);
-        };
-
         window.save = async () => {
             const btn = document.getElementById('btn-save');
-            btn.innerText = "⏳ A GERAR..."; btn.disabled = true;
-
+            btn.disabled = true; btn.innerText = "A SALVAR...";
             try {
-                // 1. ENTREGA LOGO A FOTO (DOWNLOAD LOCAL)
                 const link = document.createElement('a');
                 link.download = "arte-imovel.png";
-                link.href = cv.toDataURL("image/png");
+                link.href = cv.toDataURL();
                 link.click();
 
-                // 2. TENTA SALVAR NA NUVEM (SEM TRAVAR O ALEXANDRE)
                 const blob = await new Promise(res => cv.toBlob(res, 'image/png'));
-                const fileRef = ref(storage, `artes/${Date.now()}.png`);
+                const fileRef = ref(storage, `artes/arte_${Date.now()}.png`);
                 await uploadBytes(fileRef, blob);
                 const url = await getDownloadURL(fileRef);
 
@@ -147,14 +271,10 @@
                     url: url,
                     data: serverTimestamp()
                 });
-
-                btn.innerText = "✅ SUCESSO!";
-            } catch (e) {
-                console.error(e);
-                btn.innerText = "⚠️ BAIXADO (ERRO NUVEM)";
-            }
-            
-            setTimeout(() => { btn.innerText = "Baixar Arte e Salvar"; btn.disabled = false; }, 3000);
+                document.getElementById('toast').classList.add('show');
+                setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000);
+            } catch (e) { alert("Baixado! (Erro na nuvem: verifique as Regras no Firebase)"); }
+            btn.disabled = false; btn.innerText = "BAIXAR E SALVAR NA NUVEM";
         };
     </script>
 </body>

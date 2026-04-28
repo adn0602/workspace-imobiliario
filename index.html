@@ -1,588 +1,1781 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Workspace | Alexandre Damasceno</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#020617">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <style>
-        :root {
-            --bg-dark: #050505;
-            --glass-bg: rgba(20, 25, 40, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.3);
-            --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 45%, #b38728 100%);
-            --blue-gradient: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #1d4ed8 100%);
-            --text-main: #f8fafc;
-            --gold-text: #e8c97a;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Workspace | Alexandre Damasceno</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Lato', sans-serif; overflow-x: hidden; min-height: 100vh; }
+<style>
+:root {
+  --black: #000000;
+  --dark: #080c14;
+  --dark2: #0d1220;
+  --panel: rgba(255,255,255,0.03);
+  --border: rgba(255,255,255,0.06);
+  --border-gold: rgba(201,168,76,0.3);
+  --gold: #c9a84c;
+  --gold2: #f0d080;
+  --gold3: #ffe9a0;
+  --blue: #3b82f6;
+  --blue2: #60a5fa;
+  --green: #10b981;
+  --red: #ef4444;
+  --text: #f0f4ff;
+  --muted: #4a5568;
+  --muted2: #718096;
+  --dock-w: 72px;
+}
 
-        .background-anim { position: fixed; inset: 0; z-index: -1; pointer-events: none; background-image: radial-gradient(circle at 15% 50%, rgba(201, 168, 76, 0.08), transparent 25%), radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 25%); }
-        .background-anim::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px; transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px); animation: gridMove 20s linear infinite; }
-        @keyframes gridMove { 0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); } 100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); } }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
-        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); position: sticky; top: 0; z-index: 1000; flex-wrap: wrap; gap: 10px; }
-        .clock-widget { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--gold-text); }
-        .post-counter { font-size: 1rem; color: #94a3b8; display: flex; align-items: center; gap: 8px; }
-        .post-counter span { background: var(--gold-gradient); color: #000; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
+html,body{height:100%;overflow:hidden}
 
-        .search-container { padding: 20px 30px 0; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
-        .search-bar { width: 100%; background: var(--glass-bg); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 15px; padding: 15px 25px; color: white; font-size: 1.2rem; backdrop-filter: blur(10px); outline: none; transition: border-color 0.3s; }
-        .search-bar:focus { border-color: var(--gold-text); }
+body{
+  background:var(--black);
+  color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+}
 
-        /* DOCK LATERAL ESQUERDO */
-        .side-dock {
-            position: fixed;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(10, 15, 25, 0.95);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 30px;
-            padding: 15px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 99999;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
-        }
-        .dock-item {
-            background: transparent;
-            border: none;
-            outline: none;
-            font-family: inherit;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 8px;
-            color: #94a3b8;
-            cursor: pointer;
-            transition: 0.3s;
-            position: relative;
-            border-radius: 20px;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .dock-item * { pointer-events: none; }
-        .dock-item.active { color: #c9a84c; background: rgba(201, 168, 76, 0.15); }
-        .dock-item i { font-size: 1.6rem; transition: transform 0.3s; }
-        .dock-item span { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-top: 5px; opacity: 0.8; }
-        .dock-item:hover { color: white; transform: scale(1.1); }
-        .dock-item:hover i { transform: translateY(-3px); }
+/* ═══════════════════════════════════
+   CANVAS BACKGROUND
+═══════════════════════════════════ */
+#bg-canvas{
+  position:fixed;inset:0;z-index:0;
+  pointer-events:none;
+}
 
-        @media (max-width: 768px) {
-            .side-dock { left: 10px; padding: 10px 6px; gap: 8px; }
-            .dock-item { padding: 8px 5px; }
-            .dock-item i { font-size: 1.2rem; }
-            .dock-item span { font-size: 0.6rem; }
-        }
+/* ═══════════════════════════════════
+   LAYOUT SHELL
+═══════════════════════════════════ */
+.shell{
+  position:fixed;inset:0;
+  display:flex;
+  z-index:1;
+}
 
-        .main-content { max-width: 1200px; margin: 0 auto; padding: 30px; padding-bottom: 150px; position: relative; z-index: 10; margin-left: 100px; }
-        @media (max-width: 768px) { .main-content { margin-left: 70px; padding: 20px; } }
+/* ═══════════════════════════════════
+   SIDEBAR DOCK
+═══════════════════════════════════ */
+.dock{
+  width:var(--dock-w);
+  flex-shrink:0;
+  height:100%;
+  background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(20px);
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:20px 0;
+  gap:4px;
+  z-index:100;
+  position:relative;
+}
 
-        .slide { display: none; opacity: 0; transform: translateY(20px); }
-        .slide.active { display: block; opacity: 1; transform: translateY(0); animation: fadeIn 0.4s forwards; }
-        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+.dock-logo{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;
+  font-size:16px;font-weight:800;
+  color:#000;
+  margin-bottom:16px;
+  flex-shrink:0;
+  box-shadow:0 0 20px rgba(201,168,76,0.3);
+}
 
-        .section-header { margin-bottom: 25px; font-family: 'Poppins'; }
-        .section-header h2 { font-size: 2rem; }
-        .section-header p { color: #94a3b8; font-size: 1.1rem; }
+.dock-divider{
+  width:32px;height:1px;
+  background:var(--border);
+  margin:8px 0;
+}
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center; color: var(--text-main); transition: 0.3s; position: relative; cursor: pointer; }
-        .card:hover { transform: translateY(-8px); border-color: var(--gold-text); background: rgba(255,255,255,0.05); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .card-icon { width: 55px; height: 55px; margin-bottom: 15px; border-radius: 12px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
-        .card-icon img { width: 35px; height: 35px; border-radius: 8px; }
-        .card .title { font-size: 1.2rem; font-weight: 700; font-family: 'Poppins'; }
-        .card .sub { font-size: 0.85rem; color: #94a3b8; margin-top: 5px; }
+.dock-btn{
+  width:52px;height:52px;
+  border-radius:14px;
+  border:none;
+  background:transparent;
+  color:var(--muted2);
+  cursor:pointer;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:4px;
+  transition:all 0.2s;
+  position:relative;
+  font-family:'Space Grotesk',sans-serif;
+}
 
-        .notify-badge { position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; font-size: 0.75rem; font-weight: bold; padding: 4px 10px; border-radius: 20px; box-shadow: 0 4px 10px rgba(239,68,68,0.4); }
-        .badge-gold { background: var(--gold-gradient); color: #000; box-shadow: 0 4px 10px rgba(201,168,76,0.4); }
+.dock-btn i{font-size:1.2rem;transition:all 0.2s;}
+.dock-btn span{font-size:0.52rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;opacity:0.7;}
 
-        .creator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        @media (max-width: 800px) { .creator-grid { grid-template-columns: 1fr; } }
-        .panel { background: var(--glass-bg); border-radius: 20px; padding: 25px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(15px); }
+.dock-btn:hover{
+  background:rgba(255,255,255,0.05);
+  color:var(--text);
+}
 
-        textarea, input, select { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: white; padding: 15px; font-size: 1.1rem; font-family: 'Lato', sans-serif; }
-        textarea:focus, input:focus, select:focus { border-color: var(--gold-text); outline: none; }
-        
-        .btn-primary { width: 100%; background: var(--gold-gradient); color: #000; border: none; padding: 20px; border-radius: 15px; font-size: 1.2rem; font-weight: 800; cursor: pointer; margin-top: 15px; text-transform: uppercase; transition: 0.3s; }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.dock-btn.active{
+  background:rgba(201,168,76,0.12);
+  color:var(--gold);
+}
 
-        #preview-canvas { width: 100%; max-width: 500px; height: auto; border-radius: 15px; border: 1px solid var(--glass-border); margin-top: 15px; display: block; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.dock-btn.active::before{
+  content:'';
+  position:absolute;
+  left:-1px;top:50%;transform:translateY(-50%);
+  width:3px;height:28px;
+  background:linear-gradient(180deg,var(--gold),var(--gold2));
+  border-radius:0 3px 3px 0;
+}
 
-        .calc-wrapper { display: none; margin-top: 15px; width: 100%; }
-        .calc-wrapper.show { display: block; }
+/* ═══════════════════════════════════
+   MAIN AREA
+═══════════════════════════════════ */
+.main{
+  flex:1;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  min-width:0;
+}
 
-        #toast { position: fixed; top: 80px; right: 30px; background: #10b981; color: white; padding: 15px 25px; border-radius: 12px; font-weight: bold; font-size: 1.1rem; transform: translateX(150%); transition: 0.4s; z-index: 3000; display: flex; align-items: center; gap: 10px; }
-        #toast.show { transform: translateX(0); }
+/* ═══════════════════════════════════
+   TOP BAR
+═══════════════════════════════════ */
+.topbar{
+  height:56px;
+  flex-shrink:0;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  padding:0 24px;
+  gap:16px;
+}
 
-        .status-badge { position: fixed; bottom: 30px; right: 20px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; z-index: 9999; border: 1px solid rgba(255,255,255,0.2); }
-        
-        .history-section { margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.2); }
-        .history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; max-height: 400px; overflow-y: auto; padding: 10px; }
-        .history-item { background: rgba(0,0,0,0.5); border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.3s; }
-        .history-item:hover { transform: scale(1.05); border: 1px solid var(--gold-text); }
-        .history-item img { width: 100%; height: 150px; object-fit: cover; }
-        .history-item p { padding: 10px; font-size: 0.8rem; text-align: center; }
+.topbar-title{
+  font-family:'Syne',sans-serif;
+  font-size:0.85rem;
+  font-weight:700;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--gold);
+  flex-shrink:0;
+}
 
-        .tool-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        .tool-btn:hover { background: var(--gold-text); color: black; }
-        
-        .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(0,0,0,.3); border-radius: 50%; border-top-color: #000; animation: spin 1s ease-in-out infinite; margin-right: 10px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+.search-wrap{
+  flex:1;
+  position:relative;
+  max-width:400px;
+}
 
-        .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
-        @media (max-width: 600px) { .two-columns { grid-template-columns: 1fr; } }
-    </style>
+.search-wrap i{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  color:var(--muted2);font-size:0.85rem;
+}
+
+.search-input{
+  width:100%;
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 14px 8px 36px;
+  color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+  font-size:0.85rem;
+  outline:none;
+  transition:all 0.2s;
+}
+
+.search-input:focus{
+  border-color:var(--border-gold);
+  background:rgba(201,168,76,0.04);
+}
+
+.search-input::placeholder{color:var(--muted);}
+
+.topbar-right{
+  margin-left:auto;
+  display:flex;align-items:center;gap:16px;
+  flex-shrink:0;
+}
+
+.clock{
+  font-family:'Share Tech Mono',monospace;
+  font-size:1.1rem;
+  color:var(--gold2);
+  letter-spacing:0.05em;
+}
+
+.counter-pill{
+  background:rgba(201,168,76,0.1);
+  border:1px solid var(--border-gold);
+  border-radius:20px;
+  padding:4px 12px;
+  font-size:0.75rem;
+  font-weight:600;
+  color:var(--gold);
+  display:flex;align-items:center;gap:6px;
+}
+
+/* ═══════════════════════════════════
+   CONTENT AREA
+═══════════════════════════════════ */
+.content{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:28px 28px 40px;
+  scroll-behavior:smooth;
+}
+
+.content::-webkit-scrollbar{width:4px;}
+.content::-webkit-scrollbar-track{background:transparent;}
+.content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px;}
+
+/* ═══════════════════════════════════
+   SLIDES
+═══════════════════════════════════ */
+.slide{display:none;}
+.slide.active{
+  display:block;
+  animation:slideIn 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+
+@keyframes slideIn{
+  from{opacity:0;transform:translateY(16px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ═══════════════════════════════════
+   SECTION HEADER
+═══════════════════════════════════ */
+.section-head{
+  margin-bottom:24px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-end;justify-content:space-between;
+}
+
+.section-head h2{
+  font-family:'Syne',sans-serif;
+  font-size:1.6rem;
+  font-weight:800;
+  letter-spacing:-0.02em;
+  color:var(--text);
+}
+
+.section-head p{
+  font-size:0.8rem;
+  color:var(--muted2);
+  margin-top:3px;
+  letter-spacing:0.04em;
+}
+
+.section-tag{
+  font-size:0.65rem;
+  font-weight:700;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--gold);
+  background:rgba(201,168,76,0.1);
+  border:1px solid var(--border-gold);
+  padding:4px 10px;
+  border-radius:20px;
+}
+
+/* ═══════════════════════════════════
+   CARDS GRID
+═══════════════════════════════════ */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:14px;
+}
+
+.grid.compact{
+  grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+}
+
+/* ═══════════════════════════════════
+   APP CARD
+═══════════════════════════════════ */
+.app-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px 14px 16px;
+  text-decoration:none;
+  display:flex;flex-direction:column;
+  align-items:center;text-align:center;
+  color:var(--text);
+  cursor:pointer;
+  transition:all 0.2s;
+  position:relative;
+  overflow:hidden;
+  min-height:110px;
+  justify-content:center;
+  gap:10px;
+}
+
+.app-card::before{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 0%,rgba(255,255,255,0.04),transparent 70%);
+  pointer-events:none;
+}
+
+.app-card:hover{
+  border-color:rgba(201,168,76,0.25);
+  background:rgba(201,168,76,0.05);
+  transform:translateY(-4px);
+  box-shadow:0 12px 32px rgba(0,0,0,0.4);
+}
+
+.app-card:active{transform:translateY(-1px);}
+
+.app-card.span2{grid-column:span 2;}
+
+.card-ico{
+  width:48px;height:48px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.06);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;
+  overflow:hidden;
+  flex-shrink:0;
+}
+
+.card-ico img{width:28px;height:28px;object-fit:contain;border-radius:6px;}
+.card-ico i{font-size:1.4rem;}
+
+.card-name{
+  font-size:0.8rem;
+  font-weight:600;
+  letter-spacing:0.01em;
+  color:var(--text);
+  line-height:1.2;
+}
+
+.card-sub{
+  font-size:0.68rem;
+  color:var(--muted2);
+  margin-top:-4px;
+}
+
+.badge{
+  position:absolute;top:10px;right:10px;
+  font-size:0.6rem;font-weight:700;
+  padding:3px 7px;border-radius:10px;
+  text-transform:uppercase;letter-spacing:0.05em;
+}
+
+.badge-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;}
+.badge-blue{background:rgba(59,130,246,0.2);color:var(--blue2);border:1px solid rgba(59,130,246,0.3);}
+
+/* ═══════════════════════════════════
+   PANEL
+═══════════════════════════════════ */
+.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:22px;
+}
+
+.panel-title{
+  font-family:'Syne',sans-serif;
+  font-size:0.75rem;
+  font-weight:700;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;
+}
+
+.panel-title::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,var(--border-gold),transparent);
+}
+
+/* ═══════════════════════════════════
+   FORM ELEMENTS
+═══════════════════════════════════ */
+.field{margin-bottom:16px;}
+
+.field label{
+  display:block;
+  font-size:0.7rem;
+  font-weight:600;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--muted2);
+  margin-bottom:6px;
+}
+
+input[type=text],input[type=file],textarea,select{
+  width:100%;
+  background:rgba(0,0,0,0.4);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:11px 14px;
+  color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+  font-size:0.9rem;
+  outline:none;
+  transition:border-color 0.2s;
+  resize:vertical;
+}
+
+input[type=text]:focus,textarea:focus,select:focus{
+  border-color:var(--border-gold);
+  background:rgba(201,168,76,0.03);
+}
+
+input::placeholder,textarea::placeholder{color:var(--muted);}
+
+/* ═══════════════════════════════════
+   EMOJI BAR
+═══════════════════════════════════ */
+.emoji-bar{
+  display:flex;flex-wrap:wrap;gap:6px;
+  margin-bottom:14px;
+}
+
+.emoji-btn{
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:5px 9px;
+  font-size:1rem;
+  cursor:pointer;
+  transition:all 0.15s;
+  color:white;
+}
+
+.emoji-btn:hover{
+  background:rgba(201,168,76,0.15);
+  border-color:var(--border-gold);
+  transform:scale(1.15);
+}
+
+/* ═══════════════════════════════════
+   TEMPLATES
+═══════════════════════════════════ */
+.template-list{
+  display:flex;flex-direction:column;gap:8px;
+  margin-bottom:16px;
+}
+
+.tpl-btn{
+  background:rgba(0,0,0,0.3);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px 14px;
+  color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+  font-size:0.82rem;
+  cursor:pointer;
+  text-align:left;
+  transition:all 0.2s;
+}
+
+.tpl-btn:hover{
+  background:rgba(201,168,76,0.08);
+  border-color:var(--border-gold);
+}
+
+.tpl-btn strong{
+  display:block;
+  font-size:0.68rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:2px;
+}
+
+/* ═══════════════════════════════════
+   BUTTONS
+═══════════════════════════════════ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:8px;
+  border:none;cursor:pointer;
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:600;
+  letter-spacing:0.04em;
+  transition:all 0.2s;
+  border-radius:12px;
+}
+
+.btn-gold{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;
+  padding:13px 20px;
+  font-size:0.85rem;
+  width:100%;
+  margin-top:12px;
+  box-shadow:0 4px 16px rgba(201,168,76,0.2);
+}
+
+.btn-gold:hover{
+  box-shadow:0 6px 24px rgba(201,168,76,0.35);
+  transform:translateY(-2px);
+}
+
+.btn-blue{
+  background:rgba(59,130,246,0.15);
+  border:1px solid rgba(59,130,246,0.3);
+  color:var(--blue2);
+  padding:10px 16px;
+  font-size:0.8rem;
+  width:100%;
+  margin-top:8px;
+}
+
+.btn-blue:hover{background:rgba(59,130,246,0.25);}
+
+.btn-sm{
+  padding:7px 14px;
+  font-size:0.75rem;
+  border-radius:8px;
+}
+
+/* ═══════════════════════════════════
+   POST PREVIEW (FACEBOOK STYLE)
+═══════════════════════════════════ */
+.fb-preview{
+  background:#fff;
+  border-radius:12px;
+  overflow:hidden;
+  color:#1c1e21;
+  font-family:'Space Grotesk',sans-serif;
+}
+
+.fb-head{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;
+  border-bottom:1px solid #e4e6ea;
+}
+
+.fb-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#000;
+}
+
+.fb-uname{font-size:14px;font-weight:700;color:#050505;}
+.fb-sub{font-size:11px;color:#65676b;}
+.fb-body{
+  padding:12px 14px;
+  font-size:14px;line-height:1.5;
+  white-space:pre-wrap;word-break:break-word;
+  min-height:50px;color:#050505;
+}
+
+.fb-img-wrap img{width:100%;max-height:260px;object-fit:cover;display:block;}
+
+.fb-actions{
+  padding:8px 14px;
+  border-top:1px solid #e4e6ea;
+  display:flex;gap:14px;
+}
+
+.fb-action{font-size:12px;color:#65676b;display:flex;align-items:center;gap:4px;}
+
+/* ═══════════════════════════════════
+   GROUPS CHECKLIST
+═══════════════════════════════════ */
+.groups-list{
+  display:flex;flex-direction:column;gap:6px;
+  max-height:220px;overflow-y:auto;
+  padding-right:4px;
+}
+
+.groups-list::-webkit-scrollbar{width:3px;}
+.groups-list::-webkit-scrollbar-thumb{background:var(--border);}
+
+.group-row{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(0,0,0,0.2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:9px 12px;
+  cursor:pointer;
+  transition:all 0.15s;
+}
+
+.group-row:hover{border-color:var(--border-gold);}
+.group-row.done{background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.2);}
+
+.group-row input[type=checkbox]{
+  width:15px;height:15px;
+  accent-color:var(--gold);
+  flex-shrink:0;
+  cursor:pointer;
+}
+
+.group-row label{
+  font-size:0.8rem;color:var(--text);
+  letter-spacing:0;text-transform:none;
+  margin:0;cursor:pointer;font-weight:400;
+  flex:1;
+}
+
+.group-row.done label{text-decoration:line-through;color:var(--muted2);}
+
+.group-add-row{
+  display:flex;gap:8px;margin-top:10px;
+}
+
+.group-add-row input{flex:1;}
+
+/* ═══════════════════════════════════
+   CREATOR (CANVAS)
+═══════════════════════════════════ */
+.creator-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+@media(max-width:800px){.creator-layout{grid-template-columns:1fr;}}
+
+#preview-canvas{
+  width:100%;
+  border-radius:12px;
+  border:1px solid var(--border);
+  display:block;
+  background:#111;
+}
+
+.history-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+  gap:12px;
+  margin-top:16px;
+  max-height:360px;
+  overflow-y:auto;
+}
+
+.history-item{
+  background:rgba(0,0,0,0.4);
+  border-radius:10px;
+  overflow:hidden;
+  cursor:pointer;
+  border:1px solid var(--border);
+  transition:all 0.2s;
+}
+
+.history-item:hover{
+  border-color:var(--border-gold);
+  transform:scale(1.03);
+}
+
+.history-item img{width:100%;height:120px;object-fit:cover;display:block;}
+.history-item p{padding:8px;font-size:0.72rem;text-align:center;color:var(--muted2);}
+
+/* ═══════════════════════════════════
+   CALCULADORA
+═══════════════════════════════════ */
+.calc-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin-top:10px;
+}
+
+.calc-btn{
+  background:rgba(255,255,255,0.06);
+  border:1px solid var(--border);
+  border-radius:8px;
+  color:var(--text);
+  font-family:'Share Tech Mono',monospace;
+  font-size:1rem;
+  padding:12px;
+  cursor:pointer;
+  transition:all 0.15s;
+}
+
+.calc-btn:hover{background:rgba(255,255,255,0.1);}
+.calc-btn.op{color:var(--gold);}
+.calc-btn.eq{background:rgba(201,168,76,0.2);color:var(--gold2);}
+.calc-btn.cl{background:rgba(239,68,68,0.15);color:#fca5a5;}
+
+#calc-display{
+  background:rgba(0,0,0,0.5);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px 16px;
+  color:var(--gold2);
+  font-family:'Share Tech Mono',monospace;
+  font-size:1.4rem;
+  text-align:right;
+  width:100%;
+  margin-bottom:8px;
+  pointer-events:none;
+}
+
+/* ═══════════════════════════════════
+   LINKS ÚTEIS
+═══════════════════════════════════ */
+.links-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:14px;
+}
+
+.link-panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:22px;
+  display:flex;flex-direction:column;
+  align-items:center;text-align:center;gap:10px;
+  transition:all 0.2s;
+}
+
+.link-panel:hover{
+  border-color:var(--border-gold);
+  background:rgba(201,168,76,0.04);
+  transform:translateY(-3px);
+}
+
+.link-panel i{font-size:2rem;}
+.link-panel h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;}
+.link-panel p{font-size:0.78rem;color:var(--muted2);line-height:1.4;}
+
+/* ═══════════════════════════════════
+   HOME PROFILE
+═══════════════════════════════════ */
+.profile-hero{
+  display:flex;align-items:center;gap:20px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:24px;
+  margin-bottom:20px;
+  position:relative;
+  overflow:hidden;
+}
+
+.profile-hero::before{
+  content:'';
+  position:absolute;top:0;right:0;
+  width:200px;height:100%;
+  background:radial-gradient(circle at 100% 50%,rgba(201,168,76,0.08),transparent 70%);
+  pointer-events:none;
+}
+
+.profile-monogram{
+  width:64px;height:64px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#000;
+  box-shadow:0 0 30px rgba(201,168,76,0.25);
+}
+
+.profile-info h1{
+  font-family:'Syne',sans-serif;
+  font-size:1.4rem;font-weight:800;
+  color:var(--text);
+  line-height:1.1;
+}
+
+.profile-info p{
+  font-size:0.78rem;color:var(--muted2);
+  margin-top:4px;letter-spacing:0.04em;
+}
+
+.profile-stats{
+  display:flex;gap:16px;margin-top:10px;
+}
+
+.stat{text-align:center;}
+.stat-num{
+  font-family:'Share Tech Mono',monospace;
+  font-size:1.1rem;color:var(--gold2);font-weight:700;
+}
+.stat-label{font-size:0.65rem;color:var(--muted2);letter-spacing:0.06em;text-transform:uppercase;}
+
+/* ═══════════════════════════════════
+   TOAST
+═══════════════════════════════════ */
+#toast{
+  position:fixed;bottom:24px;right:24px;
+  background:rgba(10,20,10,0.95);
+  border:1px solid rgba(16,185,129,0.3);
+  color:#6ee7b7;
+  padding:12px 20px;
+  border-radius:12px;
+  font-size:0.85rem;font-weight:600;
+  display:flex;align-items:center;gap:10px;
+  transform:translateX(120%);
+  transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  z-index:9999;
+  backdrop-filter:blur(20px);
+  max-width:300px;
+}
+
+#toast.show{transform:translateX(0);}
+#toast.error{border-color:rgba(239,68,68,0.3);color:#fca5a5;}
+
+/* ═══════════════════════════════════
+   MODAL
+═══════════════════════════════════ */
+#modal{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.92);
+  z-index:99999;
+  justify-content:center;align-items:center;
+  backdrop-filter:blur(8px);
+}
+
+#modal.open{display:flex;}
+
+#modal img{max-width:90%;max-height:90%;border-radius:12px;}
+
+#modal-close{
+  position:absolute;top:20px;right:20px;
+  background:rgba(255,255,255,0.1);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:8px 16px;border-radius:8px;
+  cursor:pointer;font-family:'Space Grotesk',sans-serif;
+  font-size:0.85rem;
+}
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════ */
+@media(max-width:600px){
+  :root{--dock-w:58px;}
+  .content{padding:16px 14px 40px;}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;}
+  .topbar-title{display:none;}
+  .profile-hero{flex-direction:column;text-align:center;}
+  .profile-stats{justify-content:center;}
+}
+
+/* ═══════════════════════════════════
+   SCROLLBAR GLOBAL
+═══════════════════════════════════ */
+*::-webkit-scrollbar{width:4px;height:4px;}
+*::-webkit-scrollbar-track{background:transparent;}
+*::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:2px;}
+</style>
 </head>
 <body>
 
-    <div class="background-anim"></div>
+<!-- ANIMATED BACKGROUND -->
+<canvas id="bg-canvas"></canvas>
 
-    <header class="top-bar">
-        <div class="post-counter" title="Artes criadas">
-            <i class="fa-solid fa-image"></i> Criadas: <span id="post-count">0</span>
+<!-- SHELL -->
+<div class="shell">
+
+  <!-- DOCK -->
+  <nav class="dock">
+    <div class="dock-logo">A</div>
+    <div class="dock-divider"></div>
+    <button class="dock-btn active" onclick="go('home',this)" title="Home">
+      <i class="fa-solid fa-house"></i><span>Home</span>
+    </button>
+    <button class="dock-btn" onclick="go('sociais',this)" title="Sociais">
+      <i class="fa-solid fa-users"></i><span>Social</span>
+    </button>
+    <button class="dock-btn" onclick="go('vendas',this)" title="Vendas">
+      <i class="fa-solid fa-building"></i><span>Vendas</span>
+    </button>
+    <button class="dock-btn" onclick="go('escritorio',this)" title="Escritório">
+      <i class="fa-solid fa-briefcase"></i><span>Office</span>
+    </button>
+    <button class="dock-btn" onclick="go('ia',this)" title="IA">
+      <i class="fa-solid fa-brain"></i><span>IA</span>
+    </button>
+    <button class="dock-btn" onclick="go('post',this)" title="Post Creator">
+      <i class="fa-solid fa-pen-to-square"></i><span>Post</span>
+    </button>
+    <button class="dock-btn" onclick="go('studio',this)" title="Estúdio">
+      <i class="fa-solid fa-image"></i><span>Arte</span>
+    </button>
+    <button class="dock-btn" onclick="go('links',this)" title="Links">
+      <i class="fa-solid fa-link"></i><span>Links</span>
+    </button>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-title">Workspace</div>
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input class="search-input" id="search" placeholder="Buscar links..." oninput="doSearch(this.value)">
+      </div>
+      <div class="topbar-right">
+        <div class="counter-pill">
+          <i class="fa-solid fa-image"></i>
+          <span id="post-count">0</span> artes
         </div>
-        <div class="clock-widget" id="clock">00:00:00</div>
+        <div class="clock" id="clock">00:00</div>
+      </div>
     </header>
 
-    <div class="search-container">
-        <input type="text" id="search-input" class="search-bar" placeholder="🔍 Buscar links (Ex: Pura, Insta, ChatGPT)...">
-    </div>
+    <!-- CONTENT -->
+    <div class="content" id="content">
 
-    <main class="main-content">
-        
-        <!-- Slide Sociais -->
-        <section id="slide-sociais" class="slide active">
-            <div class="section-header"><h2>Redes Sociais</h2><p>Comunicação e Presença Digital</p></div>
-            <div class="grid">
-                <a href="https://wa.me/5521972653971" target="_blank" class="card link-item" data-search="whatsapp zap">
-                    <div class="notify-badge badge-gold">Prioridade</div>
-                    <div class="card-icon"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i></div>
-                    <span class="title">WhatsApp</span><span class="sub">Profissional</span>
-                </a>
-                <a href="https://www.instagram.com/alexandredamasceno.corretor" target="_blank" class="card link-item" data-search="instagram corretor profissional">
-                    <div class="card-icon"><i class="fa-brands fa-instagram" style="color: #E1306C;"></i></div>
-                    <span class="title">Instagram</span><span class="sub">Profissional</span>
-                </a>
-                <a href="https://www.instagram.com/alexandre.d.nascimento" target="_blank" class="card link-item" data-search="instagram pessoal">
-                    <div class="card-icon"><i class="fa-brands fa-instagram" style="color: #833AB4;"></i></div>
-                    <span class="title">Instagram</span><span class="sub">Pessoal</span>
-                </a>
-                <a href="https://www.facebook.com/alexandre.damasceno.nascimento" target="_blank" class="card link-item" data-search="facebook profissional">
-                    <div class="card-icon"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i></div>
-                    <span class="title">Facebook</span><span class="sub">Profissional</span>
-                </a>
-                <a href="https://www.facebook.com/alexandre.damasceno.nascimento" target="_blank" class="card link-item" data-search="facebook pessoal">
-                    <div class="card-icon"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i></div>
-                    <span class="title">Facebook</span><span class="sub">Pessoal</span>
-                </a>
-                <a href="https://www.tiktok.com/@alexandrecorretor106899" target="_blank" class="card link-item" data-search="tiktok">
-                    <div class="card-icon"><i class="fa-brands fa-tiktok" style="color: #fff;"></i></div>
-                    <span class="title">TikTok</span><span class="sub">@corretor106899</span>
-                </a>
+      <!-- ══ HOME ══ -->
+      <section class="slide active" id="slide-home">
+        <div class="profile-hero">
+          <div class="profile-monogram">A</div>
+          <div class="profile-info">
+            <h1>Alexandre Damasceno</h1>
+            <p>Consultor Imobiliário · CRECI 106.899 · Lopes Rio</p>
+            <div class="profile-stats">
+              <div class="stat">
+                <div class="stat-num" id="stat-artes">0</div>
+                <div class="stat-label">Artes</div>
+              </div>
+              <div class="stat">
+                <div class="stat-num" id="stat-data">—</div>
+                <div class="stat-label">Hoje</div>
+              </div>
             </div>
-        </section>
+          </div>
+        </div>
 
-        <!-- Slide Vendas -->
-        <section id="slide-vendas" class="slide">
-            <div class="section-header"><h2>Vendas</h2><p>Incorporadoras e Parcerias</p></div>
-            <div class="grid">
-                <a href="https://linktr.ee/comercialcalper" target="_blank" class="card link-item" data-search="calper">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=linktr.ee&sz=64" alt="Calper"></div>
-                    <span class="title">Calper</span>
-                </a>
-                <a href="https://linktr.ee/opp.claudioaguimaraes" target="_blank" class="card link-item" data-search="opportunity">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=linktr.ee&sz=64" alt="Opportunity"></div>
-                    <span class="title">Opportunity</span>
-                </a>
-                <a href="#" target="_blank" class="card link-item" data-search="rg progress">
-                    <div class="card-icon"><i class="fa-solid fa-city" style="color: #c9a84c;"></i></div>
-                    <span class="title">RG Progress</span>
-                </a>
-                <a href="#" target="_blank" class="card link-item" data-search="tegra">
-                    <div class="card-icon"><i class="fa-solid fa-building" style="color: #3b82f6;"></i></div>
-                    <span class="title">Tegra</span>
-                </a>
-                <a href="https://linktr.ee/comercial_calcada" target="_blank" class="card link-item" data-search="calcada">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=linktr.ee&sz=64" alt="Calçada"></div>
-                    <span class="title">Calçada</span>
-                </a>
-                <a href="https://linktr.ee/ilhapura" target="_blank" class="card link-item" data-search="btg ilha pura">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=linktr.ee&sz=64" alt="BTG"></div>
-                    <span class="title">BTG Pura</span>
-                </a>
+        <div class="section-head">
+          <div><h2>Acesso Rápido</h2><p>Links essenciais do dia a dia</p></div>
+          <span class="section-tag">Home</span>
+        </div>
+
+        <div class="grid">
+          <a href="https://wa.me/5521972653971" target="_blank" class="app-card span2 link-item" data-s="whatsapp zap">
+            <div class="badge badge-gold">Prioridade</div>
+            <div class="card-ico"><i class="fa-brands fa-whatsapp" style="color:#25D366"></i></div>
+            <div class="card-name">WhatsApp Business</div>
+            <div class="card-sub">21 97265-3971</div>
+          </a>
+          <a href="https://site-corretor-seven.vercel.app/" target="_blank" class="app-card link-item" data-s="site corretor">
+            <div class="card-ico"><i class="fa-solid fa-globe" style="color:var(--blue2)"></i></div>
+            <div class="card-name">Meu Site</div>
+            <div class="card-sub">Corretor</div>
+          </a>
+          <a href="https://drive.google.com/drive/u/0/my-drive" target="_blank" class="app-card link-item" data-s="drive google">
+            <div class="card-ico"><i class="fa-brands fa-google-drive" style="color:#4285f4"></i></div>
+            <div class="card-name">Google Drive</div>
+          </a>
+          <a href="https://mail.google.com" target="_blank" class="app-card link-item" data-s="gmail email">
+            <div class="card-ico"><i class="fa-solid fa-envelope" style="color:#ea4335"></i></div>
+            <div class="card-name">Gmail</div>
+          </a>
+          <a href="https://aeaimoveis.inforcedata.com.br" target="_blank" class="app-card link-item" data-s="inforce crm">
+            <div class="card-ico"><i class="fa-solid fa-chart-line" style="color:var(--gold)"></i></div>
+            <div class="card-name">Inforce CRM</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- ══ SOCIAIS ══ -->
+      <section class="slide" id="slide-sociais">
+        <div class="section-head">
+          <div><h2>Redes Sociais</h2><p>Presença digital e comunicação</p></div>
+          <span class="section-tag">Social</span>
+        </div>
+        <div class="grid">
+          <a href="https://www.instagram.com/alexandredamasceno.corretor" target="_blank" class="app-card link-item" data-s="instagram corretor">
+            <div class="card-ico"><i class="fa-brands fa-instagram" style="color:#E1306C"></i></div>
+            <div class="card-name">Instagram</div><div class="card-sub">Trabalho</div>
+          </a>
+          <a href="https://www.instagram.com/alexandre.d.nascimento" target="_blank" class="app-card link-item" data-s="instagram pessoal">
+            <div class="card-ico"><i class="fa-brands fa-instagram" style="color:#833AB4"></i></div>
+            <div class="card-name">Instagram</div><div class="card-sub">Pessoal</div>
+          </a>
+          <a href="https://www.facebook.com/alexandre.damasceno.nascimento" target="_blank" class="app-card link-item" data-s="facebook pessoal">
+            <div class="card-ico"><i class="fa-brands fa-facebook" style="color:#1877F2"></i></div>
+            <div class="card-name">Facebook</div><div class="card-sub">Pessoal</div>
+          </a>
+          <a href="https://www.facebook.com" target="_blank" class="app-card link-item" data-s="facebook trabalho">
+            <div class="card-ico"><i class="fa-brands fa-facebook" style="color:#1877F2"></i></div>
+            <div class="card-name">Facebook</div><div class="card-sub">Trabalho</div>
+          </a>
+          <a href="https://www.tiktok.com/@alexandrecorretor106899" target="_blank" class="app-card link-item" data-s="tiktok">
+            <div class="card-ico"><i class="fa-brands fa-tiktok"></i></div>
+            <div class="card-name">TikTok</div><div class="card-sub">@corretor106899</div>
+          </a>
+          <a href="https://web.whatsapp.com" target="_blank" class="app-card link-item" data-s="whatsapp pessoal">
+            <div class="card-ico"><i class="fa-brands fa-whatsapp" style="color:#25D366"></i></div>
+            <div class="card-name">WhatsApp</div><div class="card-sub">Pessoal</div>
+          </a>
+          <a href="https://business.whatsapp.com" target="_blank" class="app-card link-item" data-s="whatsapp business">
+            <div class="card-ico"><i class="fa-brands fa-whatsapp" style="color:#128C7E"></i></div>
+            <div class="card-name">WA Business</div><div class="card-sub">Trabalho</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- ══ VENDAS ══ -->
+      <section class="slide" id="slide-vendas">
+        <div class="section-head">
+          <div><h2>Vendas</h2><p>Incorporadoras e portfólio</p></div>
+          <span class="section-tag">Vendas</span>
+        </div>
+        <div class="grid">
+          <a href="https://linktr.ee/comercialcalper" target="_blank" class="app-card link-item" data-s="calper">
+            <div class="card-ico"><i class="fa-solid fa-city" style="color:#c9a84c"></i></div>
+            <div class="card-name">Calper</div>
+          </a>
+          <a href="https://linktr.ee/opp.claudioaguimaraes" target="_blank" class="app-card link-item" data-s="opportunity">
+            <div class="card-ico"><i class="fa-solid fa-handshake" style="color:#2e7d32"></i></div>
+            <div class="card-name">Opportunity</div>
+          </a>
+          <a href="https://linktr.ee/ilhapura" target="_blank" class="app-card link-item" data-s="btg pura ilha">
+            <div class="card-ico"><i class="fa-solid fa-building-columns" style="color:#1565c0"></i></div>
+            <div class="card-name">BTG Pura</div>
+          </a>
+          <a href="https://linktr.ee/comercial_calcada" target="_blank" class="app-card link-item" data-s="calcada">
+            <div class="card-ico"><i class="fa-solid fa-trowel-bricks" style="color:var(--gold)"></i></div>
+            <div class="card-name">Calçada</div>
+          </a>
+          <a href="https://aeaimoveis.inforcedata.com.br/dashboard/geral-2024" target="_blank" class="app-card link-item span2" data-s="inforce dashboard">
+            <div class="card-ico"><i class="fa-solid fa-chart-line" style="color:var(--gold)"></i></div>
+            <div class="card-name">Inforce Dashboard</div>
+          </a>
+          <a href="https://www.orulo.com.br" target="_blank" class="app-card link-item" data-s="orulo imoveis">
+            <div class="card-ico"><i class="fa-solid fa-magnifying-glass-location" style="color:#6c63ff"></i></div>
+            <div class="card-name">Órulo</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- ══ ESCRITÓRIO ══ -->
+      <section class="slide" id="slide-escritorio">
+        <div class="section-head">
+          <div><h2>Escritório</h2><p>Gestão e produtividade</p></div>
+          <span class="section-tag">Office</span>
+        </div>
+        <div class="grid">
+          <a href="https://mail.google.com" target="_blank" class="app-card link-item" data-s="gmail email">
+            <div class="card-ico"><i class="fa-solid fa-envelope" style="color:#ea4335"></i></div>
+            <div class="card-name">Gmail</div>
+          </a>
+          <a href="https://drive.google.com/drive/u/0/my-drive" target="_blank" class="app-card link-item" data-s="google drive">
+            <div class="card-ico"><i class="fa-brands fa-google-drive" style="color:#4285f4"></i></div>
+            <div class="card-name">Google Drive</div>
+          </a>
+          <a href="https://mega.nz" target="_blank" class="app-card link-item" data-s="mega nuvem">
+            <div class="card-ico"><i class="fa-solid fa-cloud" style="color:#d9272e"></i></div>
+            <div class="card-name">MEGA</div>
+          </a>
+          <a href="https://app.asana.com" target="_blank" class="app-card link-item" data-s="asana tarefas">
+            <div class="card-ico"><i class="fa-solid fa-list-check" style="color:#f06a6a"></i></div>
+            <div class="card-name">Asana</div>
+          </a>
+          <a href="https://www.canva.com" target="_blank" class="app-card link-item" data-s="canva design">
+            <div class="card-ico"><i class="fa-solid fa-palette" style="color:#00c4cc"></i></div>
+            <div class="card-name">Canva</div>
+          </a>
+          <a href="https://www.capcut.com" target="_blank" class="app-card link-item" data-s="capcut video">
+            <div class="card-ico"><i class="fa-solid fa-scissors" style="color:#fff"></i></div>
+            <div class="card-name">CapCut</div>
+          </a>
+        </div>
+
+        <!-- CALCULADORA -->
+        <div class="section-head" style="margin-top:28px;">
+          <div><h2>Calculadora</h2></div>
+        </div>
+        <div class="panel" style="max-width:320px;">
+          <input id="calc-display" readonly value="0">
+          <div class="calc-grid">
+            <button class="calc-btn cl" onclick="calcBtn('C')">C</button>
+            <button class="calc-btn op" onclick="calcBtn('(')">(</button>
+            <button class="calc-btn op" onclick="calcBtn(')')">)</button>
+            <button class="calc-btn op" onclick="calcBtn('/')">÷</button>
+            <button class="calc-btn" onclick="calcBtn('7')">7</button>
+            <button class="calc-btn" onclick="calcBtn('8')">8</button>
+            <button class="calc-btn" onclick="calcBtn('9')">9</button>
+            <button class="calc-btn op" onclick="calcBtn('*')">×</button>
+            <button class="calc-btn" onclick="calcBtn('4')">4</button>
+            <button class="calc-btn" onclick="calcBtn('5')">5</button>
+            <button class="calc-btn" onclick="calcBtn('6')">6</button>
+            <button class="calc-btn op" onclick="calcBtn('-')">−</button>
+            <button class="calc-btn" onclick="calcBtn('1')">1</button>
+            <button class="calc-btn" onclick="calcBtn('2')">2</button>
+            <button class="calc-btn" onclick="calcBtn('3')">3</button>
+            <button class="calc-btn op" onclick="calcBtn('+')">+</button>
+            <button class="calc-btn" onclick="calcBtn('0')" style="grid-column:span 2">0</button>
+            <button class="calc-btn" onclick="calcBtn('.')">.</button>
+            <button class="calc-btn eq" onclick="calcBtn('=')">=</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ IA ══ -->
+      <section class="slide" id="slide-ia">
+        <div class="section-head">
+          <div><h2>Inteligência Artificial</h2><p>Assistentes e ferramentas de IA</p></div>
+          <span class="section-tag">IA</span>
+        </div>
+        <div class="grid">
+          <a href="https://claude.ai" target="_blank" class="app-card link-item" data-s="claude anthropic">
+            <div class="card-ico"><i class="fa-solid fa-microchip" style="color:#d97757"></i></div>
+            <div class="card-name">Claude</div><div class="card-sub">Anthropic</div>
+          </a>
+          <a href="https://chatgpt.com" target="_blank" class="app-card link-item" data-s="chatgpt openai">
+            <div class="card-ico"><i class="fa-solid fa-robot" style="color:#10a37f"></i></div>
+            <div class="card-name">ChatGPT</div><div class="card-sub">OpenAI</div>
+          </a>
+          <a href="https://gemini.google.com" target="_blank" class="app-card link-item" data-s="gemini google">
+            <div class="card-ico"><i class="fa-solid fa-star" style="color:#4285f4"></i></div>
+            <div class="card-name">Gemini</div><div class="card-sub">Google</div>
+          </a>
+          <a href="https://chat.deepseek.com" target="_blank" class="app-card link-item" data-s="deepseek">
+            <div class="card-ico"><i class="fa-solid fa-brain" style="color:#4d9fff"></i></div>
+            <div class="card-name">DeepSeek</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- ══ POST CREATOR ══ -->
+      <section class="slide" id="slide-post">
+        <div class="section-head">
+          <div><h2>Post Creator</h2><p>Crie e copie posts para grupos do Facebook</p></div>
+          <span class="section-tag">Post</span>
+        </div>
+
+        <div class="creator-layout">
+          <!-- EDITOR -->
+          <div style="display:flex;flex-direction:column;gap:14px;">
+
+            <div class="panel">
+              <div class="panel-title">📋 Templates Rápidos</div>
+              <div class="template-list">
+                <button class="tpl-btn" onclick="applyTpl('lancamento')"><strong>🚀 Lançamento</strong>Post para divulgar lançamento de imóvel</button>
+                <button class="tpl-btn" onclick="applyTpl('venda')"><strong>🏠 Apartamento à Venda</strong>Anúncio com características do imóvel</button>
+                <button class="tpl-btn" onclick="applyTpl('visita')"><strong>📅 Convite para Visita</strong>Chamada para agendar visita</button>
+                <button class="tpl-btn" onclick="applyTpl('credencial')"><strong>💎 Apresentação Pessoal</strong>Post de autoridade do corretor</button>
+              </div>
             </div>
-        </section>
 
-        <!-- Slide Escritório -->
-        <section id="slide-escritorio" class="slide">
-            <div class="section-header"><h2>Escritório</h2><p>Ferramentas de Gestão e Arquivos</p></div>
-            <div class="grid">
-                <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" class="card link-item" data-search="gmail email">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=mail.google.com&sz=64" alt="Gmail"></div>
-                    <span class="title">Gmail</span>
-                </a>
-                <a href="https://drive.google.com/drive/u/0/my-drive" target="_blank" class="card link-item" data-search="google drive">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=drive.google.com&sz=64" alt="Drive"></div>
-                    <span class="title">Google Drive</span>
-                </a>
-                <a href="https://mega.nz" target="_blank" class="card link-item" data-search="mega nuvem">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=mega.nz&sz=64" alt="Mega"></div>
-                    <span class="title">Mega Drive</span>
-                </a>
-                <div class="card link-item" onclick="window.toggleCalc(event)" style="cursor:pointer;" data-search="calculadora">
-                    <div class="card-icon"><i class="fa-solid fa-calculator" style="color: #10b981;"></i></div>
-                    <span class="title">Calculadora</span>
-                    <div class="calc-wrapper" id="calc-app" onclick="event.stopPropagation()">
-                        <input type="text" id="calc-display" readonly style="margin-bottom:10px; text-align:right;">
-                        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:5px;">
-                            <button onclick="window.calc('7', event)" class="tool-btn">7</button><button onclick="window.calc('8', event)" class="tool-btn">8</button><button onclick="window.calc('9', event)" class="tool-btn">9</button><button onclick="window.calc('/', event)" class="tool-btn">/</button>
-                            <button onclick="window.calc('4', event)" class="tool-btn">4</button><button onclick="window.calc('5', event)" class="tool-btn">5</button><button onclick="window.calc('6', event)" class="tool-btn">6</button><button onclick="window.calc('*', event)" class="tool-btn">*</button>
-                            <button onclick="window.calc('1', event)" class="tool-btn">1</button><button onclick="window.calc('2', event)" class="tool-btn">2</button><button onclick="window.calc('3', event)" class="tool-btn">3</button><button onclick="window.calc('-', event)" class="tool-btn">-</button>
-                            <button onclick="window.calc('C', event)" class="tool-btn" style="background:#ef4444;">C</button><button onclick="window.calc('0', event)" class="tool-btn">0</button><button onclick="window.calc('=', event)" class="tool-btn" style="background:#10b981;">=</button><button onclick="window.calc('+', event)" class="tool-btn">+</button>
-                        </div>
-                    </div>
+            <div class="panel">
+              <div class="panel-title">✏️ Editor</div>
+              <div class="field">
+                <label>Título / Chamada</label>
+                <input type="text" id="pt-title" placeholder="Ex: 🏡 Apartamento 3 quartos no Recreio" oninput="updatePrev()">
+              </div>
+              <div class="field">
+                <label>Texto do Post</label>
+                <div class="emoji-bar">
+                  <button class="emoji-btn" onclick="addE('🏡')">🏡</button>
+                  <button class="emoji-btn" onclick="addE('💎')">💎</button>
+                  <button class="emoji-btn" onclick="addE('🔑')">🔑</button>
+                  <button class="emoji-btn" onclick="addE('📍')">📍</button>
+                  <button class="emoji-btn" onclick="addE('📞')">📞</button>
+                  <button class="emoji-btn" onclick="addE('✅')">✅</button>
+                  <button class="emoji-btn" onclick="addE('🌊')">🌊</button>
+                  <button class="emoji-btn" onclick="addE('🚀')">🚀</button>
+                  <button class="emoji-btn" onclick="addE('⭐')">⭐</button>
+                  <button class="emoji-btn" onclick="addE('💰')">💰</button>
+                  <button class="emoji-btn" onclick="addE('👉')">👉</button>
+                  <button class="emoji-btn" onclick="addE('📲')">📲</button>
                 </div>
+                <textarea id="pt-body" rows="7" placeholder="Digite o conteúdo do post..." oninput="updatePrev()"></textarea>
+              </div>
+              <div class="field">
+                <label>Assinatura</label>
+                <input type="text" id="pt-sig" value="📲 Alexandre Damasceno | CRECI 106.899 | Lopes Rio" oninput="updatePrev()">
+              </div>
+              <div class="field">
+                <label>Imagem (opcional)</label>
+                <input type="file" id="pt-img" accept="image/*" onchange="loadPrevImg(event)">
+              </div>
+              <button class="btn btn-gold" onclick="copyPost()">
+                <i class="fa-solid fa-copy"></i> Copiar Texto para Colar nos Grupos
+              </button>
             </div>
-        </section>
 
-        <!-- Slide IA -->
-        <section id="slide-ia" class="slide">
-            <div class="section-header"><h2>Inteligência Artificial</h2><p>Assistentes Virtuais</p></div>
-            <div class="grid">
-                <a href="https://chatgpt.com/" target="_blank" class="card link-item" data-search="chatgpt openai">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64" alt="ChatGPT"></div>
-                    <span class="title">ChatGPT</span>
-                </a>
-                <a href="https://claude.ai/" target="_blank" class="card link-item" data-search="claude anthropic">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=64" alt="Claude"></div>
-                    <span class="title">Claude IA</span>
-                </a>
-                <a href="https://gemini.google.com/" target="_blank" class="card link-item" data-search="gemini google">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64" alt="Gemini"></div>
-                    <span class="title">Gemini</span>
-                </a>
-                <a href="https://chat.deepseek.com/" target="_blank" class="card link-item" data-search="deepseek">
-                    <div class="card-icon"><img src="https://www.google.com/s2/favicons?domain=deepseek.com&sz=64" alt="DeepSeek"></div>
-                    <span class="title">DeepSeek</span>
-                </a>
-            </div>
-        </section>
+          </div>
 
-        <!-- Slide Creator (Estúdio na Nuvem) -->
-        <section id="slide-creator" class="slide">
-            <div class="section-header"><h2>Estúdio na Nuvem</h2><p>Gere e descarregue a sua imagem na hora!</p></div>
-            <div class="creator-grid">
-                <div class="panel">
-                    <label>1. Foto do Imóvel</label>
-                    <input type="file" id="image-input" accept="image/*" onchange="window.processImage()">
-                    
-                    <label style="margin-top:20px;">2. Título da Arte</label>
-                    <input type="text" id="p-title" placeholder="Ex: COBERTURA VISTA MAR" oninput="window.drawCanvas()">
-                    
-                    <label style="margin-top:20px;">3. Valor / Chamada</label>
-                    <input type="text" id="p-price" placeholder="Ex: R$ 1.850.000 ou LANÇAMENTO" oninput="window.drawCanvas()">
-                    
-                    <label style="margin-top:20px;">4. Descrição do Imóvel</label>
-                    <textarea id="p-desc" rows="4" placeholder="Ex: 3 quartos sendo 1 suíte, varanda gourmet..." oninput="window.drawCanvas()"></textarea>
-                    
-                    <button class="btn-primary" id="btn-save" onclick="window.downloadAndSaveImage()">💾 BAIXAR E SALVAR NO GOOGLE DRIVE</button>
-                    <button class="btn-primary" id="btn-history" onclick="window.showHistory()" style="background: var(--blue-gradient); margin-top: 10px;">📜 VER HISTÓRICO</button>
+          <!-- PREVIEW + GRUPOS -->
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="panel">
+              <div class="panel-title">👁️ Preview Facebook</div>
+              <div class="fb-preview">
+                <div class="fb-head">
+                  <div class="fb-avatar">A</div>
+                  <div>
+                    <div class="fb-uname">Alexandre Damasceno</div>
+                    <div class="fb-sub">Agora · 🌐</div>
+                  </div>
                 </div>
-                <div class="panel" style="display: flex; flex-direction: column; align-items: center;">
-                    <label style="color:var(--gold-text); font-weight:bold;">Visualização Final</label>
-                    <canvas id="preview-canvas" width="1080" height="1350"></canvas>
-                    <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 15px; text-align: center;">Assinatura automática: ALEXANDRE DAMASCENO | CRECI 106.899</p>
+                <div id="fb-img-wrap" style="display:none">
+                  <img id="fb-prev-img" alt="" style="width:100%;max-height:220px;object-fit:cover;display:block;">
                 </div>
-            </div>
-            <div class="history-section" id="history-section" style="display: none;">
-                <div class="section-header"><h2>📸 Histórico de Artes</h2><p>Últimas criações salvas</p></div>
-                <div class="history-grid" id="history-grid"><div style="text-align:center; padding:20px;">Clique em "Ver Histórico"</div></div>
-            </div>
-        </section>
-
-        <!-- NOVA JANELA: Meus Links Úteis (GitHub, Vercel, Apps Script) -->
-        <section id="slide-links" class="slide">
-            <div class="section-header">
-                <h2><i class="fa-solid fa-link"></i> Meus Links Úteis</h2>
-                <p>Acesse rapidamente as ferramentas do seu workspace</p>
-            </div>
-            <div class="two-columns">
-                <div class="panel">
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <i class="fa-brands fa-github" style="font-size: 3rem; color: #fff;"></i>
-                        <h3 style="margin-top: 10px;">GitHub</h3>
-                    </div>
-                    <p>Seu repositório de código - onde está todo o seu projeto</p>
-                    <a href="https://github.com" target="_blank" class="btn-primary" style="display: block; text-align: center; text-decoration: none; margin-top: 20px;">🔗 Acessar GitHub</a>
+                <div class="fb-body" id="fb-prev-text">Seu post aparecerá aqui...</div>
+                <div class="fb-actions">
+                  <span class="fb-action">👍 Curtir</span>
+                  <span class="fb-action">💬 Comentar</span>
+                  <span class="fb-action">↗️ Compartilhar</span>
                 </div>
-                <div class="panel">
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 3rem; color: #3b82f6;"></i>
-                        <h3 style="margin-top: 10px;">Vercel</h3>
-                    </div>
-                    <p>Onde seu site está hospedado - deploy automático pelo GitHub</p>
-                    <a href="https://vercel.com" target="_blank" class="btn-primary" style="display: block; text-align: center; text-decoration: none; margin-top: 20px;">🚀 Acessar Vercel</a>
-                </div>
-                <div class="panel">
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <i class="fa-solid fa-code" style="font-size: 3rem; color: #34a853;"></i>
-                        <h3 style="margin-top: 10px;">Apps Script</h3>
-                    </div>
-                    <p>O código que conecta seu site ao Google Drive</p>
-                    <a href="https://script.google.com" target="_blank" class="btn-primary" style="display: block; text-align: center; text-decoration: none; margin-top: 20px;">⚡ Acessar Apps Script</a>
-                </div>
-                <div class="panel">
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <i class="fa-brands fa-google-drive" style="font-size: 3rem; color: #fbbc04;"></i>
-                        <h3 style="margin-top: 10px;">Google Drive</h3>
-                    </div>
-                    <p>Onde suas artes são salvas automaticamente</p>
-                    <a href="https://drive.google.com/drive/folders/1B7hMlT17nthy23lrjee3XF_QgQQukb7V" target="_blank" class="btn-primary" style="display: block; text-align: center; text-decoration: none; margin-top: 20px;">📁 Acessar Pasta de Artes</a>
-                </div>
+              </div>
             </div>
-            <div class="panel" style="margin-top: 20px; text-align: center;">
-                <p style="color: #94a3b8;">💡 Dica: Mantenha sempre suas credenciais em segurança e faça backups regulares dos seus códigos.</p>
+
+            <div class="panel">
+              <div class="panel-title">📢 Checklist de Grupos</div>
+              <p style="font-size:0.75rem;color:var(--muted2);margin-bottom:12px;">Marque os grupos onde já postou</p>
+              <div class="groups-list" id="groups-list">
+                <div class="group-row"><input type="checkbox" id="g1" onchange="toggleDone(this)"><label for="g1">Imóveis Barra da Tijuca RJ</label></div>
+                <div class="group-row"><input type="checkbox" id="g2" onchange="toggleDone(this)"><label for="g2">Compra e Venda de Imóveis Rio</label></div>
+                <div class="group-row"><input type="checkbox" id="g3" onchange="toggleDone(this)"><label for="g3">Recreio dos Bandeirantes — Imóveis</label></div>
+                <div class="group-row"><input type="checkbox" id="g4" onchange="toggleDone(this)"><label for="g4">Alto Padrão RJ</label></div>
+                <div class="group-row"><input type="checkbox" id="g5" onchange="toggleDone(this)"><label for="g5">Lançamentos Imobiliários RJ</label></div>
+              </div>
+              <div class="group-add-row">
+                <input type="text" id="new-grp" placeholder="Adicionar grupo...">
+                <button class="btn btn-sm btn-blue" onclick="addGroup()" style="width:auto;margin:0;flex-shrink:0">+</button>
+              </div>
+              <button class="btn btn-gold" onclick="resetGroups()" style="margin-top:10px;font-size:0.78rem;padding:10px;">
+                <i class="fa-solid fa-rotate-left"></i> Resetar Checklist
+              </button>
             </div>
-        </section>
-    </main>
+          </div>
+        </div>
+      </section>
 
-    <!-- DOCK LATERAL ESQUERDO -->
-    <nav class="side-dock">
-        <button class="dock-item active" onclick="window.switchSlide('slide-sociais', this)"><i class="fa-solid fa-users"></i><span>Sociais</span></button>
-        <button class="dock-item" onclick="window.switchSlide('slide-vendas', this)"><i class="fa-solid fa-building"></i><span>Vendas</span></button>
-        <button class="dock-item" onclick="window.switchSlide('slide-escritorio', this)"><i class="fa-solid fa-briefcase"></i><span>Escritório</span></button>
-        <button class="dock-item" onclick="window.switchSlide('slide-ia', this)"><i class="fa-solid fa-brain"></i><span>IA</span></button>
-        <button class="dock-item" onclick="window.switchSlide('slide-creator', this)"><i class="fa-solid fa-cloud-arrow-up"></i><span>Estúdio</span></button>
-        <button class="dock-item" onclick="window.switchSlide('slide-links', this)"><i class="fa-solid fa-link"></i><span>Links</span></button>
-    </nav>
+      <!-- ══ ESTÚDIO ══ -->
+      <section class="slide" id="slide-studio">
+        <div class="section-head">
+          <div><h2>Estúdio de Artes</h2><p>Crie imagens profissionais de imóveis</p></div>
+          <span class="section-tag">Arte</span>
+        </div>
 
-    <div id="toast"><i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Sucesso!</span></div>
-    <div class="status-badge"><i class="fa-solid fa-cloud"></i><span>✅ Google Drive</span></div>
+        <div class="creator-layout">
+          <div class="panel">
+            <div class="panel-title">📸 Criar Arte</div>
+            <div class="field">
+              <label>Foto do Imóvel</label>
+              <input type="file" id="image-input" accept="image/*" onchange="processImage()">
+            </div>
+            <div class="field">
+              <label>Título da Arte</label>
+              <input type="text" id="c-title" placeholder="Ex: COBERTURA VISTA MAR" oninput="drawCanvas()">
+            </div>
+            <div class="field">
+              <label>Valor / Destaque</label>
+              <input type="text" id="c-price" placeholder="Ex: R$ 1.850.000 ou LANÇAMENTO" oninput="drawCanvas()">
+            </div>
+            <div class="field">
+              <label>Descrição</label>
+              <textarea id="c-desc" rows="4" placeholder="3 quartos sendo 1 suíte, varanda gourmet..." oninput="drawCanvas()"></textarea>
+            </div>
+            <button class="btn btn-gold" id="btn-save" onclick="downloadArt()">
+              <i class="fa-solid fa-download"></i> Baixar Arte
+            </button>
+            <button class="btn btn-blue" onclick="toggleHistory()">
+              <i class="fa-solid fa-clock-rotate-left"></i> Ver Histórico
+            </button>
+          </div>
 
-    <div id="image-modal" style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10000; justify-content:center; align-items:center;">
-        <img id="modal-image" style="max-width:90%; max-height:90%;">
-        <button onclick="document.getElementById('image-modal').style.display='none'" style="position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.8); color:white; border:none; padding:10px 20px; border-radius:10px;">✕ Fechar</button>
-    </div>
+          <div class="panel" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+            <div class="panel-title" style="width:100%">🖼️ Visualização</div>
+            <canvas id="preview-canvas" width="1080" height="1350"></canvas>
+            <p style="font-size:0.72rem;color:var(--muted2);text-align:center;">Assinatura automática: ALEXANDRE DAMASCENO | CRECI 106.899</p>
+          </div>
+        </div>
 
-    <script>
-        // URL do Web App
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyat4_nlT-XPrlyQLOSMnSTkhTKxA22Gx-nOZ7BN6b_aXFgBl81vEks6AOovium5JU/exec";
-        
-        function updateClock() {
-            const clockEl = document.getElementById('clock');
-            if (clockEl) clockEl.textContent = new Date().toLocaleTimeString('pt-BR');
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+        <div id="history-wrap" style="display:none;margin-top:20px;">
+          <div class="section-head">
+            <div><h2>Histórico de Artes</h2></div>
+          </div>
+          <div class="history-grid" id="history-grid"></div>
+        </div>
+      </section>
 
-        let postCount = 0;
-        try {
-            postCount = parseInt(localStorage.getItem('postCount') || '0');
-            document.getElementById('post-count').textContent = postCount;
-        } catch(e) {}
+      <!-- ══ LINKS ══ -->
+      <section class="slide" id="slide-links">
+        <div class="section-head">
+          <div><h2>Links Úteis</h2><p>Ferramentas do workspace</p></div>
+          <span class="section-tag">Links</span>
+        </div>
+        <div class="links-grid">
+          <div class="link-panel">
+            <i class="fa-brands fa-github" style="color:#fff"></i>
+            <h3>GitHub</h3>
+            <p>Repositório de código do projeto</p>
+            <a href="https://github.com" target="_blank" class="btn btn-gold" style="text-decoration:none;font-size:0.78rem;padding:10px 16px;">Acessar</a>
+          </div>
+          <div class="link-panel">
+            <i class="fa-solid fa-triangle" style="color:#fff"></i>
+            <h3>Vercel</h3>
+            <p>Hospedagem e deploy automático</p>
+            <a href="https://vercel.com" target="_blank" class="btn btn-gold" style="text-decoration:none;font-size:0.78rem;padding:10px 16px;">Acessar</a>
+          </div>
+          <div class="link-panel">
+            <i class="fa-solid fa-code" style="color:#34a853"></i>
+            <h3>Apps Script</h3>
+            <p>Código que conecta ao Google Drive</p>
+            <a href="https://script.google.com" target="_blank" class="btn btn-gold" style="text-decoration:none;font-size:0.78rem;padding:10px 16px;">Acessar</a>
+          </div>
+          <div class="link-panel">
+            <i class="fa-brands fa-google-drive" style="color:#fbbc04"></i>
+            <h3>Pasta de Artes</h3>
+            <p>Artes salvas no Google Drive</p>
+            <a href="https://drive.google.com/drive/folders/1B7hMlT17nthy23lrjee3XF_QgQQukb7V" target="_blank" class="btn btn-gold" style="text-decoration:none;font-size:0.78rem;padding:10px 16px;">Acessar</a>
+          </div>
+          <div class="link-panel">
+            <i class="fa-solid fa-globe" style="color:var(--blue2)"></i>
+            <h3>Meu Site</h3>
+            <p>Site do corretor publicado</p>
+            <a href="https://site-corretor-seven.vercel.app/" target="_blank" class="btn btn-gold" style="text-decoration:none;font-size:0.78rem;padding:10px 16px;">Acessar</a>
+          </div>
+          <div class="link-panel">
+            <i class="fa-solid fa-chart-line" style="color:var(--gold)"></i>
+            <h3>Inforce CRM</h3>
+            <p>Dashboard de vendas</p>
+            <a href="https://aeaimoveis.inforcedata.com.br" target="_blank" class="btn btn-gold" style="text-decoration:none;font-size:0.78rem;padding:10px 16px;">Acessar</a>
+          </div>
+        </div>
+      </section>
 
-        function showToast(msg, isErr = false) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-msg').textContent = msg;
-            toast.style.background = isErr ? '#ef4444' : '#10b981';
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 4000);
-        }
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
 
-        window.switchSlide = function(slideId, btn) {
-            document.querySelectorAll('.slide').forEach(s => { s.style.display = 'none'; s.classList.remove('active'); });
-            document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
-            const target = document.getElementById(slideId);
-            if(target) { target.style.display = 'block'; setTimeout(() => target.classList.add('active'), 10); }
-            if(btn) btn.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            const histSec = document.getElementById('history-section');
-            if(histSec) histSec.style.display = 'none';
-        };
+<!-- TOAST -->
+<div id="toast"><i class="fa-solid fa-circle-check"></i> <span id="toast-msg">OK</span></div>
 
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            const slides = document.querySelectorAll('.slide');
-            if(term.length > 0) {
-                slides.forEach(s => { s.style.display = 'block'; s.classList.add('active'); });
-                document.querySelectorAll('.link-item').forEach(item => {
-                    const sd = item.getAttribute('data-search') || "";
-                    item.style.display = (item.innerText.toLowerCase().includes(term) || sd.includes(term)) ? 'flex' : 'none';
-                });
-            } else {
-                slides.forEach(s => { s.style.display = 'none'; s.classList.remove('active'); });
-                window.switchSlide('slide-sociais', document.querySelectorAll('.dock-item')[0]);
-            }
-        });
+<!-- MODAL -->
+<div id="modal">
+  <img id="modal-img" alt="">
+  <button id="modal-close" onclick="closeModal()">✕ Fechar</button>
+</div>
 
-        window.toggleCalc = function(e) { e.stopPropagation(); document.getElementById('calc-app').classList.toggle('show'); };
-        window.calc = function(v, e) {
-            e.stopPropagation();
-            const d = document.getElementById('calc-display');
-            if(v === 'C') d.value = '';
-            else if(v === '=') { try { d.value = eval(d.value); } catch(e) { d.value = 'Erro'; } }
-            else d.value += v;
-        };
+<script>
+// ═══════════════════════════════════
+// BACKGROUND CANVAS - GRID + PARTICLES
+// ═══════════════════════════════════
+(function(){
+  const c = document.getElementById('bg-canvas');
+  const ctx = c.getContext('2d');
+  let W,H,pts=[];
 
-        const canvas = document.getElementById('preview-canvas');
-        const ctx = canvas.getContext('2d');
-        window.baseImage = new Image();
+  function resize(){
+    W=c.width=window.innerWidth;
+    H=c.height=window.innerHeight;
+  }
 
-        function initCanvas() {
-            ctx.fillStyle = "#111827";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(255,255,255,0.3)";
-            ctx.font = "30px sans-serif";
-            ctx.textAlign = "center";
-            ctx.fillText("Insira a foto do imóvel acima", canvas.width/2, canvas.height/2);
-        }
-        initCanvas();
+  function initPts(){
+    pts=[];
+    const n=Math.floor((W*H)/18000);
+    for(let i=0;i<n;i++){
+      pts.push({
+        x:Math.random()*W,y:Math.random()*H,
+        vx:(Math.random()-.5)*0.3,vy:(Math.random()-.5)*0.3,
+        r:Math.random()*1.5+0.3,
+        a:Math.random()
+      });
+    }
+  }
 
-        window.processImage = function() {
-            const file = document.getElementById('image-input').files[0];
-            if(!file) { showToast("Selecione uma imagem!", true); return; }
-            if(!file.type.startsWith('image/')) { showToast("Arquivo inválido!", true); return; }
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                window.baseImage.onload = () => window.drawCanvas();
-                window.baseImage.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        };
+  function draw(){
+    ctx.clearRect(0,0,W,H);
 
-        function wrapText(context, text, x, y, maxW, lh) {
-            const paragraphs = text.split('\n');
-            let currY = y;
-            for(let p of paragraphs) {
-                let words = p.split(' ');
-                let line = '';
-                for(let w of words) {
-                    let test = line + w + ' ';
-                    if(context.measureText(test).width > maxW && line.length > 0) {
-                        context.fillText(line, x, currY);
-                        line = w + ' ';
-                        currY += lh;
-                    } else line = test;
-                }
-                context.fillText(line, x, currY);
-                currY += lh;
-            }
-        }
+    // grid
+    ctx.strokeStyle='rgba(255,255,255,0.025)';
+    ctx.lineWidth=1;
+    const gs=50;
+    for(let x=0;x<W;x+=gs){
+      ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
+    }
+    for(let y=0;y<H;y+=gs){
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+    }
 
-        window.drawCanvas = function() {
-            if(window.baseImage && window.baseImage.src && window.baseImage.complete) {
-                const scale = Math.max(canvas.width / window.baseImage.width, canvas.height / window.baseImage.height);
-                const x = (canvas.width/2) - (window.baseImage.width/2)*scale;
-                const y = (canvas.height/2) - (window.baseImage.height/2)*scale;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(window.baseImage, x, y, window.baseImage.width*scale, window.baseImage.height*scale);
-            } else {
-                ctx.fillStyle = "#111827";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            }
-            const grad = ctx.createLinearGradient(0, canvas.height*0.4, 0, canvas.height);
-            grad.addColorStop(0, "transparent");
-            grad.addColorStop(0.3, "rgba(0,0,0,0.6)");
-            grad.addColorStop(1, "rgba(0,0,0,0.95)");
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, canvas.height*0.4, canvas.width, canvas.height*0.6);
-            ctx.textAlign = "left";
-            ctx.fillStyle = "white";
-            ctx.font = "bold 55px Segoe UI, sans-serif";
-            const title = document.getElementById('p-title').value.toUpperCase() || "TÍTULO DO IMÓVEL";
-            ctx.fillText(title, 60, canvas.height-300);
-            ctx.fillStyle = "#e8c97a";
-            ctx.font = "bold 45px Segoe UI, sans-serif";
-            const price = document.getElementById('p-price').value || "VALOR / DESTAQUE";
-            ctx.fillText(price, 60, canvas.height-240);
-            ctx.fillStyle = "#cbd5e1";
-            ctx.font = "35px Segoe UI, sans-serif";
-            const desc = document.getElementById('p-desc').value;
-            if(desc) wrapText(ctx, desc, 60, canvas.height-180, 960, 45);
-            else ctx.fillText("Adicione uma descrição detalhada...", 60, canvas.height-180);
-            ctx.strokeStyle = "rgba(255,255,255,0.2)";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(60, canvas.height-90);
-            ctx.lineTo(1020, canvas.height-90);
-            ctx.stroke();
-            ctx.fillStyle = "rgba(255,255,255,0.9)";
-            ctx.font = "bold 28px Segoe UI, sans-serif";
-            ctx.fillText("ALEXANDRE DAMASCENO | CRECI 106.899", 60, canvas.height-40);
-        };
+    // glow spots
+    const g1=ctx.createRadialGradient(W*.15,H*.4,0,W*.15,H*.4,W*.3);
+    g1.addColorStop(0,'rgba(201,168,76,0.06)');
+    g1.addColorStop(1,'transparent');
+    ctx.fillStyle=g1;ctx.fillRect(0,0,W,H);
 
-        window.downloadAndSaveImage = async function() {
-            if(!window.baseImage || !window.baseImage.src || !window.baseImage.complete) {
-                showToast("⚠️ Carregue a foto do imóvel primeiro.", true);
-                return;
-            }
-            const btn = document.getElementById('btn-save');
-            const origText = btn.innerHTML;
-            btn.innerHTML = '<span class="loading-spinner"></span> SALVANDO...';
-            btn.disabled = true;
-            const canvasElem = document.getElementById('preview-canvas');
-            const title = document.getElementById('p-title').value || "Arte";
-            try {
-                const link = document.createElement('a');
-                link.download = `Imovel-${title.replace(/\s+/g, '-')}-${Date.now()}.png`;
-                link.href = canvasElem.toDataURL("image/png");
-                link.click();
-                showToast("✅ Imagem baixada! Enviando para o Drive...");
-                const imgData = canvasElem.toDataURL("image/png");
-                const fd = new FormData();
-                fd.append('imagem', imgData);
-                fd.append('titulo', title);
-                fd.append('valor', document.getElementById('p-price').value || "");
-                fd.append('descricao', document.getElementById('p-desc').value || "");
-                await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: fd });
-                const record = { id: Date.now(), titulo: title, valor: document.getElementById('p-price').value || "", descricao: document.getElementById('p-desc').value || "", imagemUrl: imgData, data: new Date().toISOString() };
-                let hist = JSON.parse(localStorage.getItem('artes_historico') || '[]');
-                hist.unshift(record);
-                if(hist.length > 20) hist = hist.slice(0,20);
-                localStorage.setItem('artes_historico', JSON.stringify(hist));
-                postCount++;
-                localStorage.setItem('postCount', postCount);
-                document.getElementById('post-count').textContent = postCount;
-                showToast("✅ Arte salva no Google Drive!");
-                document.getElementById('p-title').value = "";
-                document.getElementById('p-price').value = "";
-                document.getElementById('p-desc').value = "";
-                document.getElementById('image-input').value = "";
-                initCanvas();
-                window.baseImage = new Image();
-            } catch(e) { showToast("✅ Arquivo baixado localmente.", true); }
-            finally { btn.innerHTML = origText; btn.disabled = false; }
-        };
+    const g2=ctx.createRadialGradient(W*.85,H*.6,0,W*.85,H*.6,W*.25);
+    g2.addColorStop(0,'rgba(59,130,246,0.05)');
+    g2.addColorStop(1,'transparent');
+    ctx.fillStyle=g2;ctx.fillRect(0,0,W,H);
 
-        window.showHistory = function() {
-            const histSec = document.getElementById('history-section');
-            const histGrid = document.getElementById('history-grid');
-            histSec.style.display = 'block';
-            const hist = JSON.parse(localStorage.getItem('artes_historico') || '[]');
-            if(hist.length === 0) { histGrid.innerHTML = '<div style="text-align:center; padding:20px;">📭 Nenhuma arte salva ainda.</div>'; return; }
-            histGrid.innerHTML = '';
-            hist.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'history-item';
-                div.onclick = () => { document.getElementById('modal-image').src = item.imagemUrl; document.getElementById('image-modal').style.display = 'flex'; };
-                const dataFmt = new Date(item.data).toLocaleDateString('pt-BR');
-                div.innerHTML = `<img src="${item.imagemUrl}" loading="lazy"><p><strong>${item.titulo.substring(0,30) || 'Sem título'}</strong><br>${item.valor ? item.valor.substring(0,20) : 'Sem valor'}<br><small>${dataFmt}</small></p>`;
-                histGrid.appendChild(div);
-            });
-            showToast(`📸 ${hist.length} artes no histórico!`);
-        };
-    </script>
+    // particles
+    pts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(201,168,76,${p.a*0.4})`;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  resize();initPts();draw();
+  window.addEventListener('resize',()=>{resize();initPts();});
+})();
+
+// ═══════════════════════════════════
+// CLOCK
+// ═══════════════════════════════════
+function tick(){
+  const n=new Date();
+  const h=String(n.getHours()).padStart(2,'0');
+  const m=String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('clock').textContent=h+':'+m;
+  const days=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  document.getElementById('stat-data').textContent=days[n.getDay()]+' '+n.getDate();
+}
+tick();setInterval(tick,1000);
+
+// ═══════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════
+function go(id,btn){
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.dock-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('slide-'+id).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('content').scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════
+function doSearch(q){
+  q=q.toLowerCase().trim();
+  if(!q){
+    document.querySelectorAll('.link-item').forEach(el=>el.style.display='');
+    return;
+  }
+  // show all slides
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+  document.getElementById('slide-home').classList.add('active');
+  document.querySelectorAll('.link-item').forEach(el=>{
+    const txt=(el.innerText+' '+(el.dataset.s||'')).toLowerCase();
+    el.style.display=txt.includes(q)?'':'none';
+  });
+}
+
+// ═══════════════════════════════════
+// TOAST
+// ═══════════════════════════════════
+function toast(msg,err=false){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.className=err?'error show':'show';
+  setTimeout(()=>t.className='',3500);
+}
+
+// ═══════════════════════════════════
+// CALCULADORA
+// ═══════════════════════════════════
+let calcExpr='';
+function calcBtn(v){
+  const d=document.getElementById('calc-display');
+  if(v==='C'){calcExpr='';d.value='0';}
+  else if(v==='='){
+    try{
+      const r=Function('"use strict";return ('+calcExpr+')')();
+      d.value=+r.toFixed(8);calcExpr=String(+r.toFixed(8));
+    }catch{d.value='Erro';calcExpr='';}
+  }else{
+    calcExpr+=v;
+    d.value=calcExpr;
+  }
+}
+
+// ═══════════════════════════════════
+// POST CREATOR
+// ═══════════════════════════════════
+const tpls={
+  lancamento:`🚀 LANÇAMENTO EXCLUSIVO
+
+📍 Barra da Tijuca / Recreio dos Bandeirantes
+
+✅ Diferenciais:
+• Studios e aptos de 1 a 3 quartos
+• Lazer completo com piscina e academia
+• Acabamento premium
+
+💎 Oportunidade única de investimento!
+
+👉 Fale comigo agora — vagas limitadas:`,
+
+  venda:`🏡 APARTAMENTO À VENDA
+
+📍 {BAIRRO}
+🛏️ {N} quartos | 🚿 {N} banheiros | 🚗 {N} vaga(s)
+📐 {M²} m²
+
+✅ Destaques:
+• {DETALHE 1}
+• {DETALHE 2}
+• {DETALHE 3}
+
+💰 R$ {VALOR} — aceita financiamento
+📲 Agende sua visita:`,
+
+  visita:`📅 AGENDE SUA VISITA HOJE!
+
+Tenho um imóvel incrível te esperando em {BAIRRO} 🏡
+
+👉 {BREVE DESCRIÇÃO}
+
+Atendo com hora marcada, sem pressa e com atenção exclusiva.
+
+📲 Me chama no WhatsApp:`,
+
+  credencial:`💎 ESPECIALISTA EM ALTO PADRÃO | BARRA & RECREIO
+
+Olá! Sou Alexandre Damasceno, consultor imobiliário com foco em imóveis de médio e alto padrão no Rio de Janeiro.
+
+🎯 Meu diferencial:
+✅ Atendimento personalizado e exclusivo
+✅ Portfólio completo de lançamentos e prontos
+✅ Expertise em negociações sofisticadas
+
+📍 Barra da Tijuca · Recreio · Zona Sul
+🏢 Lopes Rio | CRECI 106.899
+
+📲 Vamos conversar?`
+};
+
+function applyTpl(k){
+  document.getElementById('pt-body').value=tpls[k];
+  updatePrev();
+}
+
+function updatePrev(){
+  const title=document.getElementById('pt-title').value;
+  const body=document.getElementById('pt-body').value;
+  const sig=document.getElementById('pt-sig').value;
+  let full='';
+  if(title)full+=title+'\n\n';
+  full+=body;
+  if(sig)full+='\n\n'+'─'.repeat(28)+'\n'+sig;
+  document.getElementById('fb-prev-text').textContent=full||'Seu post aparecerá aqui...';
+}
+
+function addE(e){
+  const ta=document.getElementById('pt-body');
+  const p=ta.selectionStart;
+  ta.value=ta.value.slice(0,p)+e+ta.value.slice(p);
+  ta.selectionStart=ta.selectionEnd=p+e.length;
+  ta.focus();updatePrev();
+}
+
+function loadPrevImg(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const img=document.getElementById('fb-prev-img');
+    img.src=e.target.result;
+    document.getElementById('fb-img-wrap').style.display='block';
+  };
+  r.readAsDataURL(f);
+}
+
+function copyPost(){
+  const title=document.getElementById('pt-title').value;
+  const body=document.getElementById('pt-body').value;
+  const sig=document.getElementById('pt-sig').value;
+  let full='';
+  if(title)full+=title+'\n\n';
+  full+=body;
+  if(sig)full+='\n\n'+'─'.repeat(28)+'\n'+sig;
+  if(!full.trim()){toast('Escreva algo antes de copiar!',true);return;}
+  navigator.clipboard.writeText(full).then(()=>toast('✅ Copiado! Cole no grupo do Facebook.')).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=full;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);toast('✅ Copiado!');
+  });
+}
+
+function toggleDone(cb){
+  cb.closest('.group-row').classList.toggle('done',cb.checked);
+}
+
+let grpCount=5;
+function addGroup(){
+  const inp=document.getElementById('new-grp');
+  const name=inp.value.trim();if(!name)return;
+  grpCount++;
+  const id='g'+grpCount;
+  const div=document.createElement('div');
+  div.className='group-row';
+  div.innerHTML=`<input type="checkbox" id="${id}" onchange="toggleDone(this)"><label for="${id}">${name}</label>`;
+  document.getElementById('groups-list').appendChild(div);
+  inp.value='';
+}
+
+function resetGroups(){
+  document.querySelectorAll('.group-row').forEach(r=>{
+    r.classList.remove('done');
+    r.querySelector('input').checked=false;
+  });
+  toast('Checklist resetado!');
+}
+
+// ═══════════════════════════════════
+// CANVAS - ARTE DE IMÓVEL
+// ═══════════════════════════════════
+const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbyat4_nlT-XPrlyQLOSMnSTkhTKxA22Gx-nOZ7BN6b_aXFgBl81vEks6AOovium5JU/exec";
+
+const cvs=document.getElementById('preview-canvas');
+const cx=cvs.getContext('2d');
+let baseImg=new Image();
+let postCount=0;
+
+try{postCount=parseInt(localStorage.getItem('postCount')||'0');}catch{}
+document.getElementById('post-count').textContent=postCount;
+document.getElementById('stat-artes').textContent=postCount;
+
+function initCanvas(){
+  cx.fillStyle='#111827';
+  cx.fillRect(0,0,cvs.width,cvs.height);
+  cx.fillStyle='rgba(255,255,255,0.2)';
+  cx.font='32px sans-serif';
+  cx.textAlign='center';
+  cx.fillText('Insira a foto do imóvel',cvs.width/2,cvs.height/2);
+}
+initCanvas();
+
+function processImage(){
+  const f=document.getElementById('image-input').files[0];
+  if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{baseImg.onload=()=>drawCanvas();baseImg.src=e.target.result;};
+  r.readAsDataURL(f);
+}
+
+function wrapText(ctx,text,x,y,mw,lh){
+  const paras=text.split('\n');let cy=y;
+  for(let p of paras){
+    let words=p.split(' ');let line='';
+    for(let w of words){
+      const test=line+w+' ';
+      if(ctx.measureText(test).width>mw&&line){
+        ctx.fillText(line,x,cy);line=w+' ';cy+=lh;
+      }else line=test;
+    }
+    ctx.fillText(line,x,cy);cy+=lh;
+  }
+}
+
+function drawCanvas(){
+  if(baseImg&&baseImg.src&&baseImg.complete){
+    const sc=Math.max(cvs.width/baseImg.width,cvs.height/baseImg.height);
+    const bx=(cvs.width/2)-(baseImg.width/2)*sc;
+    const by=(cvs.height/2)-(baseImg.height/2)*sc;
+    cx.clearRect(0,0,cvs.width,cvs.height);
+    cx.drawImage(baseImg,bx,by,baseImg.width*sc,baseImg.height*sc);
+  }else{
+    cx.fillStyle='#111827';cx.fillRect(0,0,cvs.width,cvs.height);
+  }
+  const gr=cx.createLinearGradient(0,cvs.height*.35,0,cvs.height);
+  gr.addColorStop(0,'transparent');
+  gr.addColorStop(.25,'rgba(0,0,0,0.65)');
+  gr.addColorStop(1,'rgba(0,0,0,0.96)');
+  cx.fillStyle=gr;cx.fillRect(0,cvs.height*.35,cvs.width,cvs.height*.65);
+
+  // Gold accent bar
+  const gb=cx.createLinearGradient(0,0,cvs.width,0);
+  gb.addColorStop(0,'#bf953f');gb.addColorStop(.5,'#fcf6ba');gb.addColorStop(1,'#b38728');
+  cx.fillStyle=gb;cx.fillRect(0,cvs.height*.35,cvs.width,5);
+
+  cx.textAlign='left';
+  const title=document.getElementById('c-title').value.toUpperCase()||'TÍTULO DO IMÓVEL';
+  cx.fillStyle='#ffffff';
+  cx.font='bold 58px "Segoe UI",sans-serif';
+  cx.fillText(title,60,cvs.height-310);
+
+  const price=document.getElementById('c-price').value||'VALOR / DESTAQUE';
+  cx.fillStyle='#e8c97a';
+  cx.font='bold 48px "Segoe UI",sans-serif';
+  cx.fillText(price,60,cvs.height-245);
+
+  cx.fillStyle='#cbd5e1';
+  cx.font='36px "Segoe UI",sans-serif';
+  const desc=document.getElementById('c-desc').value;
+  if(desc)wrapText(cx,desc,60,cvs.height-180,960,46);
+  else cx.fillText('Adicione uma descrição detalhada...',60,cvs.height-180);
+
+  cx.strokeStyle='rgba(255,255,255,0.15)';cx.lineWidth=1.5;
+  cx.beginPath();cx.moveTo(60,cvs.height-88);cx.lineTo(1020,cvs.height-88);cx.stroke();
+
+  cx.fillStyle='rgba(255,255,255,0.85)';
+  cx.font='bold 30px "Segoe UI",sans-serif';
+  cx.fillText('ALEXANDRE DAMASCENO | CRECI 106.899',60,cvs.height-44);
+}
+
+async function downloadArt(){
+  if(!baseImg||!baseImg.src||!baseImg.complete){toast('Carregue a foto primeiro!',true);return;}
+  const btn=document.getElementById('btn-save');
+  btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+  btn.disabled=true;
+  const title=document.getElementById('c-title').value||'Arte';
+  try{
+    const link=document.createElement('a');
+    link.download=`Imovel-${title.replace(/\s+/g,'-')}-${Date.now()}.png`;
+    link.href=cvs.toDataURL('image/png');link.click();
+    toast('✅ Arte baixada!');
+    try{
+      const fd=new FormData();
+      fd.append('imagem',cvs.toDataURL('image/png'));
+      fd.append('titulo',title);
+      fd.append('valor',document.getElementById('c-price').value||'');
+      fd.append('descricao',document.getElementById('c-desc').value||'');
+      await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',body:fd});
+    }catch{}
+    const rec={id:Date.now(),titulo:title,valor:document.getElementById('c-price').value||'',
+      imagemUrl:cvs.toDataURL('image/png'),data:new Date().toISOString()};
+    let hist=JSON.parse(localStorage.getItem('artes')||'[]');
+    hist.unshift(rec);if(hist.length>20)hist=hist.slice(0,20);
+    localStorage.setItem('artes',JSON.stringify(hist));
+    postCount++;localStorage.setItem('postCount',postCount);
+    document.getElementById('post-count').textContent=postCount;
+    document.getElementById('stat-artes').textContent=postCount;
+  }catch(e){toast('Arte baixada localmente.',false);}
+  finally{btn.innerHTML='<i class="fa-solid fa-download"></i> Baixar Arte';btn.disabled=false;}
+}
+
+function toggleHistory(){
+  const w=document.getElementById('history-wrap');
+  const g=document.getElementById('history-grid');
+  if(w.style.display==='none'){
+    w.style.display='block';
+    const hist=JSON.parse(localStorage.getItem('artes')||'[]');
+    if(!hist.length){g.innerHTML='<div style="color:var(--muted2);padding:20px;">Nenhuma arte ainda.</div>';return;}
+    g.innerHTML='';
+    hist.forEach(item=>{
+      const d=document.createElement('div');d.className='history-item';
+      d.onclick=()=>{document.getElementById('modal-img').src=item.imagemUrl;document.getElementById('modal').classList.add('open');};
+      d.innerHTML=`<img src="${item.imagemUrl}" loading="lazy"><p>${item.titulo.substring(0,25)||'Sem título'}<br><small>${new Date(item.data).toLocaleDateString('pt-BR')}</small></p>`;
+      g.appendChild(d);
+    });
+    toast('📸 '+hist.length+' artes no histórico');
+  }else{w.style.display='none';}
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+</script>
 </body>
 </html>

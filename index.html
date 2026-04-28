@@ -38,7 +38,57 @@
         .search-bar { width: 100%; background: var(--glass-bg); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 15px; padding: 15px 25px; color: white; font-size: 1.2rem; backdrop-filter: blur(10px); outline: none; transition: border-color 0.3s; }
         .search-bar:focus { border-color: var(--gold-text); }
 
-        .main-content { max-width: 1200px; margin: 0 auto; padding: 30px; padding-bottom: 150px; position: relative; z-index: 10; }
+        /* DOCK LATERAL ESQUERDO */
+        .side-dock {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(10, 15, 25, 0.95);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 99999;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+        }
+        .dock-item {
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 8px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            border-radius: 20px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .dock-item * { pointer-events: none; }
+        .dock-item.active { color: #c9a84c; background: rgba(201, 168, 76, 0.15); }
+        .dock-item i { font-size: 1.6rem; transition: transform 0.3s; }
+        .dock-item span { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-top: 5px; opacity: 0.8; }
+        .dock-item:hover { color: white; transform: scale(1.1); }
+        .dock-item:hover i { transform: translateY(-3px); }
+
+        @media (max-width: 768px) {
+            .side-dock { left: 10px; padding: 10px 6px; gap: 8px; }
+            .dock-item { padding: 8px 5px; }
+            .dock-item i { font-size: 1.2rem; }
+            .dock-item span { font-size: 0.6rem; }
+        }
+
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 30px; padding-bottom: 150px; position: relative; z-index: 10; margin-left: 100px; }
+        @media (max-width: 768px) { .main-content { margin-left: 70px; padding: 20px; } }
+
         .slide { display: none; opacity: 0; transform: translateY(20px); }
         .slide.active { display: block; opacity: 1; transform: translateY(0); animation: fadeIn 0.4s forwards; }
         @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
@@ -61,8 +111,7 @@
         .creator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         @media (max-width: 800px) { .creator-grid { grid-template-columns: 1fr; } }
         .panel { background: var(--glass-bg); border-radius: 20px; padding: 25px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(15px); }
-        .field { margin-bottom: 20px; }
-        .field label { display: block; color: var(--gold-text); font-weight: bold; margin-bottom: 8px; }
+
         textarea, input, select { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: white; padding: 15px; font-size: 1.1rem; font-family: 'Lato', sans-serif; }
         textarea:focus, input:focus, select:focus { border-color: var(--gold-text); outline: none; }
         
@@ -71,32 +120,13 @@
 
         #preview-canvas { width: 100%; max-width: 500px; height: auto; border-radius: 15px; border: 1px solid var(--glass-border); margin-top: 15px; display: block; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
-        .dock { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 25, 0.95); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 40px; display: flex; gap: 5px; z-index: 99999; box-shadow: 0 15px 40px rgba(0,0,0,0.8); width: 90%; max-width: 600px; justify-content: space-around; }
-        .dock-item { background: transparent; border: none; outline: none; font-family: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 5px; flex: 1; color: #94a3b8; cursor: pointer; transition: 0.3s; position: relative; -webkit-tap-highlight-color: transparent; }
-        .dock-item * { pointer-events: none; }
-        .dock-item.active { color: #c9a84c; }
-        .dock-item i { font-size: 1.6rem; transition: transform 0.3s; margin-bottom: 5px; }
-        .dock-item span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0; transform: translateY(10px); position: absolute; bottom: 2px; transition: 0.3s; white-space: nowrap; }
-        .dock-item:hover i, .dock-item.active i { transform: translateY(-10px); color: white; }
-        .dock-item.active i { color: #c9a84c; }
-        .dock-item:hover span, .dock-item.active span { opacity: 1; transform: translateY(0); }
-
-        @media (max-width: 600px) {
-             .dock { padding: 5px; width: 95%; bottom: 25px; } 
-             .dock-item { padding: 15px 2px 20px; }
-             .dock-item i { font-size: 1.4rem; }
-             .dock-item span { font-size: 0.65rem; bottom: 5px; }
-             .dock-item.active span { opacity: 1; transform: translateY(0); }
-             .dock-item.active i { transform: translateY(-10px); }
-        }
-
         .calc-wrapper { display: none; margin-top: 15px; width: 100%; }
         .calc-wrapper.show { display: block; }
 
         #toast { position: fixed; top: 80px; right: 30px; background: #10b981; color: white; padding: 15px 25px; border-radius: 12px; font-weight: bold; font-size: 1.1rem; transform: translateX(150%); transition: 0.4s; z-index: 3000; display: flex; align-items: center; gap: 10px; }
         #toast.show { transform: translateX(0); }
 
-        .status-badge { position: fixed; bottom: 100px; right: 20px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; z-index: 9999; border: 1px solid rgba(255,255,255,0.2); }
+        .status-badge { position: fixed; bottom: 30px; right: 20px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; z-index: 9999; border: 1px solid rgba(255,255,255,0.2); }
         
         .history-section { margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.2); }
         .history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; max-height: 400px; overflow-y: auto; padding: 10px; }
@@ -110,6 +140,9 @@
         
         .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(0,0,0,.3); border-radius: 50%; border-top-color: #000; animation: spin 1s ease-in-out infinite; margin-right: 10px; }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
+        @media (max-width: 600px) { .two-columns { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -129,6 +162,7 @@
 
     <main class="main-content">
         
+        <!-- Slide Sociais -->
         <section id="slide-sociais" class="slide active">
             <div class="section-header"><h2>Redes Sociais</h2><p>Comunicação e Presença Digital</p></div>
             <div class="grid">
@@ -160,6 +194,7 @@
             </div>
         </section>
 
+        <!-- Slide Vendas -->
         <section id="slide-vendas" class="slide">
             <div class="section-header"><h2>Vendas</h2><p>Incorporadoras e Parcerias</p></div>
             <div class="grid">
@@ -190,6 +225,7 @@
             </div>
         </section>
 
+        <!-- Slide Escritório -->
         <section id="slide-escritorio" class="slide">
             <div class="section-header"><h2>Escritório</h2><p>Ferramentas de Gestão e Arquivos</p></div>
             <div class="grid">
@@ -221,6 +257,7 @@
             </div>
         </section>
 
+        <!-- Slide IA -->
         <section id="slide-ia" class="slide">
             <div class="section-header"><h2>Inteligência Artificial</h2><p>Assistentes Virtuais</p></div>
             <div class="grid">
@@ -243,69 +280,104 @@
             </div>
         </section>
 
+        <!-- Slide Creator (Estúdio na Nuvem) -->
         <section id="slide-creator" class="slide">
             <div class="section-header"><h2>Estúdio na Nuvem</h2><p>Gere e descarregue a sua imagem na hora!</p></div>
             <div class="creator-grid">
-                
                 <div class="panel">
-                    <label style="display:block; margin-top:5px;">1. Foto do Imóvel</label>
-                    <input type="file" id="image-input" accept="image/*" onchange="window.processImage()" style="background: rgba(255,255,255,0.1);">
+                    <label>1. Foto do Imóvel</label>
+                    <input type="file" id="image-input" accept="image/*" onchange="window.processImage()">
                     
-                    <label style="display:block; margin-top:20px;">2. Título da Arte</label>
+                    <label style="margin-top:20px;">2. Título da Arte</label>
                     <input type="text" id="p-title" placeholder="Ex: COBERTURA VISTA MAR" oninput="window.drawCanvas()">
                     
-                    <label style="display:block; margin-top:20px;">3. Valor / Chamada</label>
+                    <label style="margin-top:20px;">3. Valor / Chamada</label>
                     <input type="text" id="p-price" placeholder="Ex: R$ 1.850.000 ou LANÇAMENTO" oninput="window.drawCanvas()">
                     
-                    <label style="display:block; margin-top:20px;">4. Descrição do Imóvel</label>
+                    <label style="margin-top:20px;">4. Descrição do Imóvel</label>
                     <textarea id="p-desc" rows="4" placeholder="Ex: 3 quartos sendo 1 suíte, varanda gourmet..." oninput="window.drawCanvas()"></textarea>
                     
-                    <button class="btn-primary" id="btn-save" onclick="window.downloadAndSaveImage()">
-                        <span id="btn-text">💾 BAIXAR E SALVAR NO GOOGLE DRIVE</span>
-                    </button>
+                    <button class="btn-primary" id="btn-save" onclick="window.downloadAndSaveImage()">💾 BAIXAR E SALVAR NO GOOGLE DRIVE</button>
                     <button class="btn-primary" id="btn-history" onclick="window.showHistory()" style="background: var(--blue-gradient); margin-top: 10px;">📜 VER HISTÓRICO</button>
                 </div>
-
                 <div class="panel" style="display: flex; flex-direction: column; align-items: center;">
-                    <label style="color:var(--gold-text); font-weight:bold; width: 100%;">Visualização Final</label>
+                    <label style="color:var(--gold-text); font-weight:bold;">Visualização Final</label>
                     <canvas id="preview-canvas" width="1080" height="1350"></canvas>
-                    <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 15px; text-align: center;">A assinatura "ALEXANDRE DAMASCENO | CRECI 106.899" é automática.</p>
+                    <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 15px; text-align: center;">Assinatura automática: ALEXANDRE DAMASCENO | CRECI 106.899</p>
                 </div>
-
             </div>
-
             <div class="history-section" id="history-section" style="display: none;">
-                <div class="section-header"><h2>📸 Histórico de Artes</h2><p>Últimas criações salvas no Google Drive</p></div>
-                <div class="history-grid" id="history-grid">
-                    <div style="text-align: center; padding: 20px;">Clique em "Ver Histórico" para carregar</div>
-                </div>
+                <div class="section-header"><h2>📸 Histórico de Artes</h2><p>Últimas criações salvas</p></div>
+                <div class="history-grid" id="history-grid"><div style="text-align:center; padding:20px;">Clique em "Ver Histórico"</div></div>
             </div>
         </section>
 
+        <!-- NOVA JANELA: Meus Links Úteis (GitHub, Vercel, Apps Script) -->
+        <section id="slide-links" class="slide">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-link"></i> Meus Links Úteis</h2>
+                <p>Acesse rapidamente as ferramentas do seu workspace</p>
+            </div>
+            <div class="two-columns">
+                <div class="panel">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <i class="fa-brands fa-github" style="font-size: 3rem; color: #fff;"></i>
+                        <h3 style="margin-top: 10px;">GitHub</h3>
+                    </div>
+                    <p>Seu repositório de código - onde está todo o seu projeto</p>
+                    <a href="https://github.com" target="_blank" class="btn-primary" style="display: block; text-align: center; text-decoration: none; margin-top: 20px;">🔗 Acessar GitHub</a>
+                </div>
+                <div class="panel">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 3rem; color: #3b82f6;"></i>
+                        <h3 style="margin-top: 10px;">Vercel</h3>
+                    </div>
+                    <p>Onde seu site está hospedado - deploy automático pelo GitHub</p>
+                    <a href="https://vercel.com" target="_blank" class="btn-primary" style="display: block; text-align: center; text-decoration: none; margin-top: 20px;">🚀 Acessar Vercel</a>
+                </div>
+                <div class="panel">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <i class="fa-solid fa-code" style="font-size: 3rem; color: #34a853;"></i>
+                        <h3 style="margin-top: 10px;">Apps Script</h3>
+                    </div>
+                    <p>O código que conecta seu site ao Google Drive</p>
+                    <a href="https://script.google.com" target="_blank" class="btn-primary" style="display: block; text-align: center; text-decoration: none; margin-top: 20px;">⚡ Acessar Apps Script</a>
+                </div>
+                <div class="panel">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <i class="fa-brands fa-google-drive" style="font-size: 3rem; color: #fbbc04;"></i>
+                        <h3 style="margin-top: 10px;">Google Drive</h3>
+                    </div>
+                    <p>Onde suas artes são salvas automaticamente</p>
+                    <a href="https://drive.google.com/drive/folders/1B7hMlT17nthy23lrjee3XF_QgQQukb7V" target="_blank" class="btn-primary" style="display: block; text-align: center; text-decoration: none; margin-top: 20px;">📁 Acessar Pasta de Artes</a>
+                </div>
+            </div>
+            <div class="panel" style="margin-top: 20px; text-align: center;">
+                <p style="color: #94a3b8;">💡 Dica: Mantenha sempre suas credenciais em segurança e faça backups regulares dos seus códigos.</p>
+            </div>
+        </section>
     </main>
 
-    <nav class="dock">
+    <!-- DOCK LATERAL ESQUERDO -->
+    <nav class="side-dock">
         <button class="dock-item active" onclick="window.switchSlide('slide-sociais', this)"><i class="fa-solid fa-users"></i><span>Sociais</span></button>
         <button class="dock-item" onclick="window.switchSlide('slide-vendas', this)"><i class="fa-solid fa-building"></i><span>Vendas</span></button>
         <button class="dock-item" onclick="window.switchSlide('slide-escritorio', this)"><i class="fa-solid fa-briefcase"></i><span>Escritório</span></button>
         <button class="dock-item" onclick="window.switchSlide('slide-ia', this)"><i class="fa-solid fa-brain"></i><span>IA</span></button>
         <button class="dock-item" onclick="window.switchSlide('slide-creator', this)"><i class="fa-solid fa-cloud-arrow-up"></i><span>Estúdio</span></button>
+        <button class="dock-item" onclick="window.switchSlide('slide-links', this)"><i class="fa-solid fa-link"></i><span>Links</span></button>
     </nav>
 
-    <div id="toast"><i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Sucesso! Arte pronta.</span></div>
-    
-    <div class="status-badge" id="status-badge">
-        <i class="fa-solid fa-cloud"></i>
-        <span id="firebase-status">✅ Salvando no Google Drive</span>
-    </div>
+    <div id="toast"><i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Sucesso!</span></div>
+    <div class="status-badge"><i class="fa-solid fa-cloud"></i><span>✅ Google Drive</span></div>
 
-    <div id="image-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; justify-content: center; align-items: center; cursor: pointer;">
-        <img id="modal-image" style="max-width: 90%; max-height: 90%; object-fit: contain;">
-        <button onclick="document.getElementById('image-modal').style.display='none'" style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.8); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 1.2rem;">✕ Fechar</button>
+    <div id="image-modal" style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10000; justify-content:center; align-items:center;">
+        <img id="modal-image" style="max-width:90%; max-height:90%;">
+        <button onclick="document.getElementById('image-modal').style.display='none'" style="position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.8); color:white; border:none; padding:10px 20px; border-radius:10px;">✕ Fechar</button>
     </div>
 
     <script>
-        // ✅ URL CORRETA DO WEB APP
+        // URL do Web App
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyat4_nlT-XPrlyQLOSMnSTkhTKxA22Gx-nOZ7BN6b_aXFgBl81vEks6AOovium5JU/exec";
         
         function updateClock() {
@@ -319,27 +391,25 @@
         try {
             postCount = parseInt(localStorage.getItem('postCount') || '0');
             document.getElementById('post-count').textContent = postCount;
-        } catch (error) {}
+        } catch(e) {}
 
-        function showToast(message, isError = false) {
+        function showToast(msg, isErr = false) {
             const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toast-msg');
-            toastMsg.textContent = message;
-            toast.style.background = isError ? '#ef4444' : '#10b981';
+            document.getElementById('toast-msg').textContent = msg;
+            toast.style.background = isErr ? '#ef4444' : '#10b981';
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        window.switchSlide = function(slideId, dockElement) {
+        window.switchSlide = function(slideId, btn) {
             document.querySelectorAll('.slide').forEach(s => { s.style.display = 'none'; s.classList.remove('active'); });
             document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
             const target = document.getElementById(slideId);
             if(target) { target.style.display = 'block'; setTimeout(() => target.classList.add('active'), 10); }
-            if(dockElement) dockElement.classList.add('active');
+            if(btn) btn.classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            const historySection = document.getElementById('history-section');
-            if(historySection) historySection.style.display = 'none';
+            const histSec = document.getElementById('history-section');
+            if(histSec) histSec.style.display = 'none';
         };
 
         document.getElementById('search-input').addEventListener('input', (e) => {
@@ -348,8 +418,8 @@
             if(term.length > 0) {
                 slides.forEach(s => { s.style.display = 'block'; s.classList.add('active'); });
                 document.querySelectorAll('.link-item').forEach(item => {
-                    const searchData = item.getAttribute('data-search') || "";
-                    item.style.display = (item.innerText.toLowerCase().includes(term) || searchData.includes(term)) ? 'flex' : 'none';
+                    const sd = item.getAttribute('data-search') || "";
+                    item.style.display = (item.innerText.toLowerCase().includes(term) || sd.includes(term)) ? 'flex' : 'none';
                 });
             } else {
                 slides.forEach(s => { s.style.display = 'none'; s.classList.remove('active'); });
@@ -357,29 +427,18 @@
             }
         });
 
-        window.toggleCalc = function(event) { 
-            event.stopPropagation(); 
-            const calc = document.getElementById('calc-app');
-            calc.classList.toggle('show');
-        };
-        
-        window.calc = function(val, event) {
-            event.stopPropagation();
-            const display = document.getElementById('calc-display');
-            if(val === 'C') display.value = '';
-            else if(val === '=') { 
-                try { 
-                    display.value = eval(display.value); 
-                } catch(e) { 
-                    display.value = 'Erro'; 
-                } 
-            }
-            else display.value += val;
+        window.toggleCalc = function(e) { e.stopPropagation(); document.getElementById('calc-app').classList.toggle('show'); };
+        window.calc = function(v, e) {
+            e.stopPropagation();
+            const d = document.getElementById('calc-display');
+            if(v === 'C') d.value = '';
+            else if(v === '=') { try { d.value = eval(d.value); } catch(e) { d.value = 'Erro'; } }
+            else d.value += v;
         };
 
-        window.baseImage = new Image();
         const canvas = document.getElementById('preview-canvas');
         const ctx = canvas.getContext('2d');
+        window.baseImage = new Image();
 
         function initCanvas() {
             ctx.fillStyle = "#111827";
@@ -393,204 +452,136 @@
 
         window.processImage = function() {
             const file = document.getElementById('image-input').files[0];
-            if(!file) {
-                showToast("Selecione uma imagem primeiro!", true);
-                return;
-            }
-            
-            if(!file.type.startsWith('image/')) {
-                showToast("Por favor, selecione um arquivo de imagem válido!", true);
-                return;
-            }
-            
+            if(!file) { showToast("Selecione uma imagem!", true); return; }
+            if(!file.type.startsWith('image/')) { showToast("Arquivo inválido!", true); return; }
             const reader = new FileReader();
-            reader.onload = function(event) {
-                window.baseImage.onload = function() { 
-                    window.drawCanvas(); 
-                    showToast("✅ Imagem carregada com sucesso!");
-                };
-                window.baseImage.src = event.target.result;
+            reader.onload = function(e) {
+                window.baseImage.onload = () => window.drawCanvas();
+                window.baseImage.src = e.target.result;
             };
             reader.readAsDataURL(file);
         };
 
-        function wrapText(context, text, x, y, maxWidth, lineHeight) {
+        function wrapText(context, text, x, y, maxW, lh) {
             const paragraphs = text.split('\n');
-            let currentY = y;
-            for(let p = 0; p < paragraphs.length; p++) {
-                let words = paragraphs[p].split(' ');
+            let currY = y;
+            for(let p of paragraphs) {
+                let words = p.split(' ');
                 let line = '';
-                for(let n = 0; n < words.length; n++) {
-                    let testLine = line + words[n] + ' ';
-                    let metrics = context.measureText(testLine);
-                    if (metrics.width > maxWidth && n > 0) {
-                        context.fillText(line, x, currentY);
-                        line = words[n] + ' ';
-                        currentY += lineHeight;
-                    } else { line = testLine; }
+                for(let w of words) {
+                    let test = line + w + ' ';
+                    if(context.measureText(test).width > maxW && line.length > 0) {
+                        context.fillText(line, x, currY);
+                        line = w + ' ';
+                        currY += lh;
+                    } else line = test;
                 }
-                context.fillText(line, x, currentY);
-                currentY += lineHeight;
+                context.fillText(line, x, currY);
+                currY += lh;
             }
         }
 
         window.drawCanvas = function() {
-            if (window.baseImage && window.baseImage.src && window.baseImage.complete) {
+            if(window.baseImage && window.baseImage.src && window.baseImage.complete) {
                 const scale = Math.max(canvas.width / window.baseImage.width, canvas.height / window.baseImage.height);
-                const x = (canvas.width / 2) - (window.baseImage.width / 2) * scale;
-                const y = (canvas.height / 2) - (window.baseImage.height / 2) * scale;
+                const x = (canvas.width/2) - (window.baseImage.width/2)*scale;
+                const y = (canvas.height/2) - (window.baseImage.height/2)*scale;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(window.baseImage, x, y, window.baseImage.width * scale, window.baseImage.height * scale);
+                ctx.drawImage(window.baseImage, x, y, window.baseImage.width*scale, window.baseImage.height*scale);
             } else {
                 ctx.fillStyle = "#111827";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
-
-            const gradient = ctx.createLinearGradient(0, canvas.height * 0.4, 0, canvas.height);
-            gradient.addColorStop(0, "transparent");
-            gradient.addColorStop(0.3, "rgba(0,0,0,0.6)");
-            gradient.addColorStop(1, "rgba(0,0,0,0.95)");
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, canvas.height * 0.4, canvas.width, canvas.height * 0.6);
-
+            const grad = ctx.createLinearGradient(0, canvas.height*0.4, 0, canvas.height);
+            grad.addColorStop(0, "transparent");
+            grad.addColorStop(0.3, "rgba(0,0,0,0.6)");
+            grad.addColorStop(1, "rgba(0,0,0,0.95)");
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, canvas.height*0.4, canvas.width, canvas.height*0.6);
             ctx.textAlign = "left";
-
             ctx.fillStyle = "white";
             ctx.font = "bold 55px Segoe UI, sans-serif";
             const title = document.getElementById('p-title').value.toUpperCase() || "TÍTULO DO IMÓVEL";
-            ctx.fillText(title, 60, canvas.height - 300);
-
+            ctx.fillText(title, 60, canvas.height-300);
             ctx.fillStyle = "#e8c97a";
             ctx.font = "bold 45px Segoe UI, sans-serif";
             const price = document.getElementById('p-price').value || "VALOR / DESTAQUE";
-            ctx.fillText(price, 60, canvas.height - 240);
-
+            ctx.fillText(price, 60, canvas.height-240);
             ctx.fillStyle = "#cbd5e1";
             ctx.font = "35px Segoe UI, sans-serif";
             const desc = document.getElementById('p-desc').value;
-            if(desc) { wrapText(ctx, desc, 60, canvas.height - 180, 960, 45); } 
-            else { ctx.fillText("Adicione uma descrição detalhada...", 60, canvas.height - 180); }
-
+            if(desc) wrapText(ctx, desc, 60, canvas.height-180, 960, 45);
+            else ctx.fillText("Adicione uma descrição detalhada...", 60, canvas.height-180);
             ctx.strokeStyle = "rgba(255,255,255,0.2)";
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.moveTo(60, canvas.height - 90);
-            ctx.lineTo(1020, canvas.height - 90);
+            ctx.moveTo(60, canvas.height-90);
+            ctx.lineTo(1020, canvas.height-90);
             ctx.stroke();
-
             ctx.fillStyle = "rgba(255,255,255,0.9)";
             ctx.font = "bold 28px Segoe UI, sans-serif";
-            ctx.fillText("ALEXANDRE DAMASCENO | CRECI 106.899", 60, canvas.height - 40);
+            ctx.fillText("ALEXANDRE DAMASCENO | CRECI 106.899", 60, canvas.height-40);
         };
 
         window.downloadAndSaveImage = async function() {
             if(!window.baseImage || !window.baseImage.src || !window.baseImage.complete) {
-                showToast("⚠️ Por favor, carregue a foto do imóvel primeiro.", true);
+                showToast("⚠️ Carregue a foto do imóvel primeiro.", true);
                 return;
             }
-
             const btn = document.getElementById('btn-save');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<span class="loading-spinner"></span> SALVANDO NO GOOGLE DRIVE...';
+            const origText = btn.innerHTML;
+            btn.innerHTML = '<span class="loading-spinner"></span> SALVANDO...';
             btn.disabled = true;
-
-            const canvasElement = document.getElementById('preview-canvas');
-            const title = document.getElementById('p-title').value || "Arte sem título";
-
+            const canvasElem = document.getElementById('preview-canvas');
+            const title = document.getElementById('p-title').value || "Arte";
             try {
                 const link = document.createElement('a');
-                const fileName = `Imovel-${title.replace(/\s+/g, '-')}-${Date.now()}.png`;
-                link.download = fileName;
-                link.href = canvasElement.toDataURL("image/png");
+                link.download = `Imovel-${title.replace(/\s+/g, '-')}-${Date.now()}.png`;
+                link.href = canvasElem.toDataURL("image/png");
                 link.click();
-                
-                showToast("✅ Imagem baixada! Enviando para o Google Drive...");
-                
-                const imagemDataURL = canvasElement.toDataURL("image/png");
-                
-                const formData = new FormData();
-                formData.append('imagem', imagemDataURL);
-                formData.append('titulo', title);
-                formData.append('valor', document.getElementById('p-price').value || "");
-                formData.append('descricao', document.getElementById('p-desc').value || "");
-                
-                await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: formData
-                });
-                
-                const artRecord = {
-                    id: Date.now(),
-                    titulo: title,
-                    valor: document.getElementById('p-price').value || "",
-                    descricao: document.getElementById('p-desc').value || "",
-                    imagemUrl: imagemDataURL,
-                    data: new Date().toISOString()
-                };
-                
-                let history = JSON.parse(localStorage.getItem('artes_historico') || '[]');
-                history.unshift(artRecord);
-                if (history.length > 20) history = history.slice(0, 20);
-                localStorage.setItem('artes_historico', JSON.stringify(history));
-                
+                showToast("✅ Imagem baixada! Enviando para o Drive...");
+                const imgData = canvasElem.toDataURL("image/png");
+                const fd = new FormData();
+                fd.append('imagem', imgData);
+                fd.append('titulo', title);
+                fd.append('valor', document.getElementById('p-price').value || "");
+                fd.append('descricao', document.getElementById('p-desc').value || "");
+                await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: fd });
+                const record = { id: Date.now(), titulo: title, valor: document.getElementById('p-price').value || "", descricao: document.getElementById('p-desc').value || "", imagemUrl: imgData, data: new Date().toISOString() };
+                let hist = JSON.parse(localStorage.getItem('artes_historico') || '[]');
+                hist.unshift(record);
+                if(hist.length > 20) hist = hist.slice(0,20);
+                localStorage.setItem('artes_historico', JSON.stringify(hist));
                 postCount++;
                 localStorage.setItem('postCount', postCount);
                 document.getElementById('post-count').textContent = postCount;
-                
-                showToast("✅ Arte salva no Google Drive e baixada no computador!");
-                
+                showToast("✅ Arte salva no Google Drive!");
                 document.getElementById('p-title').value = "";
                 document.getElementById('p-price').value = "";
                 document.getElementById('p-desc').value = "";
                 document.getElementById('image-input').value = "";
                 initCanvas();
                 window.baseImage = new Image();
-                
-            } catch (error) {
-                console.error("Erro:", error);
-                showToast("✅ Arte baixada! O arquivo está no seu computador.", true);
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
+            } catch(e) { showToast("✅ Arquivo baixado localmente.", true); }
+            finally { btn.innerHTML = origText; btn.disabled = false; }
         };
 
         window.showHistory = function() {
-            const historySection = document.getElementById('history-section');
-            const historyGrid = document.getElementById('history-grid');
-            
-            historySection.style.display = 'block';
-            
-            const history = JSON.parse(localStorage.getItem('artes_historico') || '[]');
-            
-            if (history.length === 0) {
-                historyGrid.innerHTML = '<div style="text-align: center; padding: 20px;">📭 Nenhuma arte salva ainda. Crie sua primeira arte!</div>';
-                return;
-            }
-            
-            historyGrid.innerHTML = '';
-            history.forEach((item) => {
+            const histSec = document.getElementById('history-section');
+            const histGrid = document.getElementById('history-grid');
+            histSec.style.display = 'block';
+            const hist = JSON.parse(localStorage.getItem('artes_historico') || '[]');
+            if(hist.length === 0) { histGrid.innerHTML = '<div style="text-align:center; padding:20px;">📭 Nenhuma arte salva ainda.</div>'; return; }
+            histGrid.innerHTML = '';
+            hist.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'history-item';
-                div.onclick = () => {
-                    const modal = document.getElementById('image-modal');
-                    const modalImg = document.getElementById('modal-image');
-                    modalImg.src = item.imagemUrl;
-                    modal.style.display = 'flex';
-                };
-                
-                const dataFormatada = new Date(item.data).toLocaleDateString('pt-BR');
-                div.innerHTML = `
-                    <img src="${item.imagemUrl}" alt="${item.titulo}" loading="lazy">
-                    <p><strong>${item.titulo.substring(0, 30) || 'Sem título'}</strong><br>
-                    ${item.valor ? item.valor.substring(0, 20) : 'Sem valor'}<br>
-                    <small style="font-size: 0.7rem;">${dataFormatada}</small></p>
-                `;
-                historyGrid.appendChild(div);
+                div.onclick = () => { document.getElementById('modal-image').src = item.imagemUrl; document.getElementById('image-modal').style.display = 'flex'; };
+                const dataFmt = new Date(item.data).toLocaleDateString('pt-BR');
+                div.innerHTML = `<img src="${item.imagemUrl}" loading="lazy"><p><strong>${item.titulo.substring(0,30) || 'Sem título'}</strong><br>${item.valor ? item.valor.substring(0,20) : 'Sem valor'}<br><small>${dataFmt}</small></p>`;
+                histGrid.appendChild(div);
             });
-            
-            showToast(`📸 ${history.length} artes no histórico!`);
+            showToast(`📸 ${hist.length} artes no histórico!`);
         };
     </script>
 </body>
